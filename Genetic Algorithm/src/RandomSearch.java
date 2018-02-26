@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class RandomSearch {
 
-    private final int NUMBER_OF_LOOPS = 1000000;
+    private final int NUMBER_OF_LOOPS = 1;
 
     private static int N;
     private static int[][] distanceMatrix;

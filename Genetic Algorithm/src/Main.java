@@ -13,6 +13,8 @@ public class Main {
     public static void main(String args[]) throws IOException {
 
         runRandomSearchForAllTestSets();
+        System.out.println();
+        runGreedySearchForAllTestSets();
 
     }
 
@@ -30,6 +32,24 @@ public class Main {
 
             RandomSearch randomSearch = new RandomSearch(N, distanceMatrix, flowMatrix);
             randomSearch.search();
+        }
+
+    }
+
+
+    public static void runGreedySearchForAllTestSets() throws IOException {
+
+        for(int i = 0; i < NAMES_OF_DATA_SETS.length; i++){
+            String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[i] + END_OF_TEST_DATA_PATH;
+            WebReader webReader = new WebReader(path);
+            WebReader readData = webReader.read();
+
+            N = readData.getNumberN();
+            distanceMatrix = readData.getMatrix1();
+            flowMatrix = readData.getMatrix2();
+
+            GreedySearch greedySearch = new GreedySearch(N, distanceMatrix, flowMatrix);
+            greedySearch.search();
         }
 
     }
