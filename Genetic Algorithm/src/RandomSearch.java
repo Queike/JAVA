@@ -10,18 +10,16 @@ public class RandomSearch {
     private static int[][] flowMatrix;
     private int bestResult;
 
-    public RandomSearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
-        this.N = N;
-        this.distanceMatrix = distanceMatrix;
-        this.flowMatrix = flowMatrix;
+    RandomSearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
+        RandomSearch.N = N;
+        RandomSearch.distanceMatrix = distanceMatrix;
+        RandomSearch.flowMatrix = flowMatrix;
     }
-
-
 
     public void search(){
         QualityCounter qualityCounter = new QualityCounter(N, distanceMatrix, flowMatrix);
 
-        int [] vector = new int[N];
+        int [] vector;
         int quality;
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
@@ -36,9 +34,9 @@ public class RandomSearch {
         System.out.println("BEST RESULT OF RANDOM SEARCH FOR N = " + N + " : " + bestResult);
     }
 
-    public int[] generateVector(int n){
+    private int[] generateVector(int n){
 
-        ArrayList<Integer> factories = new ArrayList<Integer>();
+        ArrayList<Integer> factories = new ArrayList<>();
         Random generator = new Random();
         int generatedNumber;
 

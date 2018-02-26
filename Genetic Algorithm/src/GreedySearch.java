@@ -7,21 +7,20 @@ public class GreedySearch {
     private static int[][] distanceMatrix;
     private static int[][] flowMatrix;
     private int bestResult;
-    Integer numberOfBestFactory;
+    private Integer numberOfBestFactory;
 
-    public GreedySearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
-        this.N = N;
-        this.distanceMatrix = distanceMatrix;
-        this.flowMatrix = flowMatrix;
+    GreedySearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
+        GreedySearch.N = N;
+        GreedySearch.distanceMatrix = distanceMatrix;
+        GreedySearch.flowMatrix = flowMatrix;
     }
 
     public void search(){
         QualityCounter qualityCounter = new QualityCounter(N, distanceMatrix, flowMatrix);
 
-        int [] vector = new int[N];
-        int quality;
+        int [] vector;
 
-        ArrayList<Integer> factories = new ArrayList<Integer>();
+        ArrayList<Integer> factories = new ArrayList<>();
         for(int i = 0; i < N; i++)
         {
             factories.add(i);
@@ -31,9 +30,7 @@ public class GreedySearch {
         factories.remove(vector[0]);
         int cost;
 
-
         for(int i = 1; i < N; i++){
-
 
             for(int j = 0; j < factories.size(); j++){
                 vector[i] = factories.get(j);
@@ -49,12 +46,12 @@ public class GreedySearch {
             factories.remove(numberOfBestFactory);
         }
 
-        int fainalCost = qualityCounter.count(vector);
+        int finalCost = qualityCounter.count(vector);
 
-        System.out.println("BEST RESULT OF GREEDY SEARCH FOR N = " + N + " : " + bestResult);
+        System.out.println("BEST RESULT OF GREEDY SEARCH FOR N = " + N + " : " + finalCost);
     }
 
-    public int[] getRandomlyFirstFactory(){
+    private int[] getRandomlyFirstFactory(){
         int [] vector = new int[N];
         Random generator = new Random();
         vector[0] = generator.nextInt(N);

@@ -19,7 +19,7 @@ public class Main {
     }
 
 
-    public static void runRandomSearchForAllTestSets() throws IOException {
+    private static void runRandomSearchForAllTestSets() throws IOException {
 
         for(int i = 0; i < NAMES_OF_DATA_SETS.length; i++){
             String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[i] + END_OF_TEST_DATA_PATH;
@@ -37,7 +37,7 @@ public class Main {
     }
 
 
-    public static void runGreedySearchForAllTestSets() throws IOException {
+    private static void runGreedySearchForAllTestSets() throws IOException {
 
         for(int i = 0; i < NAMES_OF_DATA_SETS.length; i++){
             String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[i] + END_OF_TEST_DATA_PATH;

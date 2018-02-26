@@ -4,10 +4,10 @@ public class QualityCounter {
     private static int[][] distanceMatrix;
     private static int[][] flowMatrix;
 
-    public QualityCounter(int N, int[][] distanceMatrix, int[][] flowMatrix){
-        this.N = N;
-        this.distanceMatrix = distanceMatrix;
-        this.flowMatrix = flowMatrix;
+    QualityCounter(int N, int[][] distanceMatrix, int[][] flowMatrix){
+        QualityCounter.N = N;
+        QualityCounter.distanceMatrix = distanceMatrix;
+        QualityCounter.flowMatrix = flowMatrix;
     }
 
     public int count(int [] array){
