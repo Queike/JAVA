@@ -33,7 +33,7 @@ public class RandomSearch {
                 bestResult = quality;
         }
 
-        System.out.println("BEST RESULT OF RANDOM SEARCH = " + bestResult);
+        System.out.println("BEST RESULT OF RANDOM SEARCH FOR N = " + N + " : " + bestResult);
     }
 
     public int[] generateVector(int n){
