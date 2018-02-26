@@ -20,6 +20,7 @@ public class RandomSearch {
         QualityCounter qualityCounter = new QualityCounter(N, distanceMatrix, flowMatrix);
 
         int [] vector;
+        int [] bestVector = new int[N];
         int quality;
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
@@ -27,11 +28,14 @@ public class RandomSearch {
 
             quality = qualityCounter.count(vector);
 
-            if(quality < bestResult || bestResult == 0)
+            if(quality < bestResult || bestResult == 0){
                 bestResult = quality;
+                bestVector = vector;
+            }
         }
 
-        System.out.println("BEST RESULT OF RANDOM SEARCH FOR N = " + N + " : " + bestResult);
+        System.out.print("BEST RESULT OF RANDOM SEARCH FOR N = " + N + " : " + bestResult + "\tvector -> ");
+        printVector(bestVector);
     }
 
     private int[] generateVector(int n){

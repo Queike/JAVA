@@ -48,7 +48,8 @@ public class GreedySearch {
 
         int finalCost = qualityCounter.count(vector);
 
-        System.out.println("BEST RESULT OF GREEDY SEARCH FOR N = " + N + " : " + finalCost);
+        System.out.print("BEST RESULT OF GREEDY SEARCH FOR N = " + N + " : " + finalCost + "\tvector -> ");
+        printVector(vector);
     }
 
     private int[] getRandomlyFirstFactory(){
@@ -57,5 +58,12 @@ public class GreedySearch {
         vector[0] = generator.nextInt(N);
 
         return vector;
+    }
+
+    public void printVector(int [] vector){
+        for(int i = 0; i < vector.length ; i++) {
+            System.out.print(vector[i] + " ");
+        }
+        System.out.println();
     }
 }
