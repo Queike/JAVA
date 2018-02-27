@@ -12,11 +12,10 @@ public class QualityCounter {
 
     public int count(int [] array){
         int result = 0;
-        for (int i=0; i<N; i++){
-            for (int j=0; j<N; j++){
-                result += (distanceMatrix[i][j]*flowMatrix[array[i]][array[j]]);
+        for (int actualLocationNumber = 0; actualLocationNumber < N; actualLocationNumber++){
+            for (int actualFactoryNumber = 0; actualFactoryNumber < N; actualFactoryNumber++){
+                result += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[array[actualLocationNumber]][array[actualFactoryNumber]]);
             }
-
         }
         return result;
     }

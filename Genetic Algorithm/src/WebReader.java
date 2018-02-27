@@ -3,7 +3,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.regex.*;
 
-
 public class WebReader {
 
     private final int LINES_TO_FIRST_MATRIX = 2;

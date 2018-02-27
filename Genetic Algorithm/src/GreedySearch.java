@@ -3,59 +3,59 @@ import java.util.Random;
 
 public class GreedySearch {
 
-    private static int N;
+    private static int locationsNumber;
     private static int[][] distanceMatrix;
     private static int[][] flowMatrix;
     private int bestResult;
     private Integer numberOfBestFactory;
 
-    GreedySearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
-        GreedySearch.N = N;
+    GreedySearch(int locationsNumber, int[][] distanceMatrix, int[][] flowMatrix){
+        GreedySearch.locationsNumber = locationsNumber;
         GreedySearch.distanceMatrix = distanceMatrix;
         GreedySearch.flowMatrix = flowMatrix;
     }
 
     public void search(){
-        QualityCounter qualityCounter = new QualityCounter(N, distanceMatrix, flowMatrix);
+        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
 
         int [] vector;
 
         ArrayList<Integer> factories = new ArrayList<>();
-        for(int i = 0; i < N; i++)
+        for(int actualFactoryNumber = 0; actualFactoryNumber < locationsNumber; actualFactoryNumber++)
         {
-            factories.add(i);
+            factories.add(actualFactoryNumber);
         }
 
         vector = getRandomlyFirstFactory();
         factories.remove(vector[0]);
         int cost;
 
-        for(int i = 1; i < N; i++){
+        for(int actualLocationNumber = 1; actualLocationNumber < locationsNumber; actualLocationNumber++){
 
-            for(int j = 0; j < factories.size(); j++){
-                vector[i] = factories.get(j);
+            for(int actualFactoryNumber = 0; actualFactoryNumber < factories.size(); actualFactoryNumber++){
+                vector[actualLocationNumber] = factories.get(actualFactoryNumber);
                 cost = qualityCounter.count(vector);
 
-                if(j == 0 || cost < bestResult){
+                if(actualFactoryNumber == 0 || cost < bestResult){
                     bestResult = cost;
-                    numberOfBestFactory = factories.get(j);
+                    numberOfBestFactory = factories.get(actualFactoryNumber);
                 }
             }
 
-            vector[i] = numberOfBestFactory;
+            vector[actualLocationNumber] = numberOfBestFactory;
             factories.remove(numberOfBestFactory);
         }
 
         int finalCost = qualityCounter.count(vector);
 
-        System.out.print("BEST RESULT OF GREEDY SEARCH FOR N = " + N + " : " + finalCost + "\tvector -> ");
+        System.out.print("BEST RESULT OF GREEDY SEARCH FOR N = " + locationsNumber + " : " + finalCost + "\tvector -> ");
         printVector(vector);
     }
 
     private int[] getRandomlyFirstFactory(){
-        int [] vector = new int[N];
+        int [] vector = new int[locationsNumber];
         Random generator = new Random();
-        vector[0] = generator.nextInt(N);
+        vector[0] = generator.nextInt(locationsNumber);
 
         return vector;
     }

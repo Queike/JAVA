@@ -6,7 +6,7 @@ public class Main {
     private static final String END_OF_TEST_DATA_PATH = ".dat";
     private static final String [] NAMES_OF_DATA_SETS = {"had12", "had14", "had16", "had18", "had20"};
 
-    private static int N;
+    private static int locationsNumber;
     private static int [][] distanceMatrix;
     private static int [][] flowMatrix;
 
@@ -15,9 +15,7 @@ public class Main {
         runRandomSearchForAllTestSets();
         System.out.println();
         runGreedySearchForAllTestSets();
-
     }
-
 
     private static void runRandomSearchForAllTestSets() throws IOException {
 
@@ -26,16 +24,14 @@ public class Main {
             WebReader webReader = new WebReader(path);
             WebReader readData = webReader.read();
 
-            N = readData.getNumberN();
+            locationsNumber = readData.getNumberN();
             distanceMatrix = readData.getMatrix1();
             flowMatrix = readData.getMatrix2();
 
-            RandomSearch randomSearch = new RandomSearch(N, distanceMatrix, flowMatrix);
+            RandomSearch randomSearch = new RandomSearch(locationsNumber, distanceMatrix, flowMatrix);
             randomSearch.search();
         }
-
     }
-
 
     private static void runGreedySearchForAllTestSets() throws IOException {
 
@@ -44,14 +40,12 @@ public class Main {
             WebReader webReader = new WebReader(path);
             WebReader readData = webReader.read();
 
-            N = readData.getNumberN();
+            locationsNumber = readData.getNumberN();
             distanceMatrix = readData.getMatrix1();
             flowMatrix = readData.getMatrix2();
 
-            GreedySearch greedySearch = new GreedySearch(N, distanceMatrix, flowMatrix);
+            GreedySearch greedySearch = new GreedySearch(locationsNumber, distanceMatrix, flowMatrix);
             greedySearch.search();
         }
-
     }
-
 }

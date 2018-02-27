@@ -5,26 +5,26 @@ public class RandomSearch {
 
     private final int NUMBER_OF_LOOPS = 1;
 
-    private static int N;
+    private static int locationsNumber;
     private static int[][] distanceMatrix;
     private static int[][] flowMatrix;
     private int bestResult;
 
-    RandomSearch(int N, int[][] distanceMatrix, int[][] flowMatrix){
-        RandomSearch.N = N;
+    RandomSearch(int locationsNumber, int[][] distanceMatrix, int[][] flowMatrix){
+        RandomSearch.locationsNumber = locationsNumber;
         RandomSearch.distanceMatrix = distanceMatrix;
         RandomSearch.flowMatrix = flowMatrix;
     }
 
     public void search(){
-        QualityCounter qualityCounter = new QualityCounter(N, distanceMatrix, flowMatrix);
+        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
 
         int [] vector;
-        int [] bestVector = new int[N];
+        int [] bestVector = new int[locationsNumber];
         int quality;
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
-            vector = generateVector(N);
+            vector = generateVector(locationsNumber);
 
             quality = qualityCounter.count(vector);
 
@@ -34,22 +34,22 @@ public class RandomSearch {
             }
         }
 
-        System.out.print("BEST RESULT OF RANDOM SEARCH FOR N = " + N + " : " + bestResult + "\tvector -> ");
+        System.out.print("BEST RESULT OF RANDOM SEARCH FOR N = " + locationsNumber + " : " + bestResult + "\tvector -> ");
         printVector(bestVector);
     }
 
-    private int[] generateVector(int n){
+    private int[] generateVector(int locationsNumber){
 
         ArrayList<Integer> factories = new ArrayList<>();
         Random generator = new Random();
         int generatedNumber;
 
-        for(int i = 0; i < n; i++)
+        for(int actualFactoryNumber = 0; actualFactoryNumber < locationsNumber; actualFactoryNumber++)
         {
-            factories.add(i);
+            factories.add(actualFactoryNumber);
         }
 
-        int [] vector = new int[n];
+        int [] vector = new int[locationsNumber];
 
         int position = 0;
 
