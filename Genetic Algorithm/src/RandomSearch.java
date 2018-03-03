@@ -70,5 +70,4 @@ public class RandomSearch {
         }
         System.out.println();
     }
-
 }
