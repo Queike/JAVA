@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Population {
 
@@ -15,11 +12,15 @@ public class Population {
     private static int locationsNumber;
     public static int[][] actualGeneration;
     private QualityCounter qualityCounter;
+    private int[][] distanceMatrix;
+    private int[][] flowMatrix;
 
-    public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter){
+    public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter, int[][] distanceMatrix, int[][] flowMatrix){
         this.populationSize = populationSize;
         this.locationsNumber = locationsNumber;
         this.qualityCounter = qualityCounter;
+        this.distanceMatrix = distanceMatrix;
+        this.flowMatrix = flowMatrix;
         actualGeneration = generateRandomlyFirstGeneration();
     }
 
@@ -149,6 +150,59 @@ public class Population {
         return solutionsAfterCrossing;
     }
 
+    public ArrayList<ArrayList> cross(int[] firstParent, int[] secondParent){
+
+        Random generator = new Random();
+
+        ArrayList<Integer> firstChild = new ArrayList<>();
+        ArrayList<Integer> secondChild = new ArrayList<>();
+
+        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+            firstChild.add(firstParent[actualGenNumber]);
+            secondChild.add(secondParent[actualGenNumber]);
+        }
+
+        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+            firstChild.add(secondParent[actualGenNumber]);
+            secondChild.add(firstParent[actualGenNumber]);
+        }
+
+        firstChild = repairChild(firstChild);
+        secondChild = repairChild(secondChild);
+
+        ArrayList<ArrayList> children = new ArrayList<>();
+        children.add(firstChild);
+        children.add(secondChild);
+        return children;
+    }
+
+    public ArrayList<ArrayList> cross(ArrayList<Integer> firstParent, ArrayList<Integer> secondParent){
+
+        Random generator = new Random();
+
+        ArrayList<Integer> firstChild = new ArrayList<>();
+        ArrayList<Integer> secondChild = new ArrayList<>();
+
+        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+            firstChild.add(firstParent.get(actualGenNumber));
+            secondChild.add(secondParent.get(actualGenNumber));
+        }
+
+        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+            firstChild.add(secondParent.get(actualGenNumber));
+            secondChild.add(firstParent.get(actualGenNumber));
+        }
+
+        firstChild = repairChild(firstChild);
+        secondChild = repairChild(secondChild);
+
+        ArrayList<ArrayList> children = new ArrayList<>();
+        children.add(firstChild);
+        children.add(secondChild);
+        return children;
+    }
+
+
     public ArrayList<Integer> repairChild(ArrayList<Integer> child){
 
         ArrayList<Integer> factories = new ArrayList<>();
@@ -220,9 +274,73 @@ public class Population {
         return chosenIndividuals;
     }
 
-    public int[][] selectIndividualsWithRoulette2(){
+    public ArrayList<int[]> createNewGenerationWithRouletteAndCross(){
         ArrayList<int[]> currentPopulation = twoDArrayToArrayListOfArrays(actualGeneration);
+        ArrayList<int[]> newPopulation = new ArrayList<>();
+
+        Random generator = new Random();
+        int firstIndexToPair;
+        int secondIndexToPair;
+        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+
+        int[] bestIndividual = qualityCounter.findBestIndividual(actualGeneration);
+        int indexOfBestIndividual = currentPopulation.indexOf(bestIndividual);
+        newPopulation.add(currentPopulation.get(indexOfBestIndividual));
+        currentPopulation.remove(indexOfBestIndividual);
+
+        while (currentPopulation.size() > 1){
+            firstIndexToPair = generator.nextInt(currentPopulation.size());
+            secondIndexToPair = generator.nextInt(currentPopulation.size());
+            if(firstIndexToPair == secondIndexToPair){
+                secondIndexToPair = generator.nextInt(currentPopulation.size());
+            }
+
+            if(willBeCrossed()){
+                ArrayList<ArrayList> children = new ArrayList<ArrayList>();
+                children = cross(currentPopulation.get(firstIndexToPair), currentPopulation.get(secondIndexToPair));
+                newPopulation.add(convertArrayListToArray(children.get(0)));
+                newPopulation.add(convertArrayListToArray(children.get(1)));
+                if(secondIndexToPair == 0)
+                    currentPopulation.remove(secondIndexToPair);
+                else
+                    currentPopulation.remove(secondIndexToPair - 1);
+            }
+            else{
+                newPopulation.add(currentPopulation.get(firstIndexToPair));
+                newPopulation.add(currentPopulation.get(secondIndexToPair));
+                currentPopulation.remove(firstIndexToPair);
+                if(secondIndexToPair == 0)
+                    currentPopulation.remove(secondIndexToPair);
+                else
+                    currentPopulation.remove(secondIndexToPair - 1);
+            }
+        }
+
+        if(currentPopulation.size() > 0){
+            newPopulation.add(currentPopulation.get(0));
+            currentPopulation.remove(0);
+        }
         
+        return newPopulation;
+    }
+
+    public static int[] convertArrayListToArray(List<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        Iterator<Integer> iterator = integers.iterator();
+        for (int i = 0; i < ret.length; i++)
+        {
+            ret[i] = iterator.next().intValue();
+        }
+        return ret;
+    }
+
+    public boolean willBeCrossed(){
+        Random generator = new Random();
+        int randomPoint = generator.nextInt(100) + 1;
+        if(randomPoint < PERCENTAGE_PROBABILITY_OF_CROSSING)
+            return true;
+        else return false;
     }
 
 

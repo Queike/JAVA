@@ -22,7 +22,7 @@ public class GeneticAlgorithm {
         int previousResult = 0;
 
         QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
-        Population population = new Population(populationSize, locationsNumber, qualityCounter);
+        Population population = new Population(populationSize, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
         System.out.println("Best generation --> " + qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration)));
         actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
 
