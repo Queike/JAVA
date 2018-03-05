@@ -9,7 +9,7 @@ public class CSV {
 
     public CSV(String fileName) throws FileNotFoundException {
         sb = new StringBuilder();
-        pw = new PrintWriter(new File("test" + ".csv"));
+        pw = new PrintWriter(new File(fileName + ".csv"));
     }
 
     public void appendToFile(String string){

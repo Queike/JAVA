@@ -6,22 +6,25 @@ public class GeneticAlgorithm {
 
     private final int FINAL_DIFFERENCE_VALUE = 0;
 
-
-
     private int populationSize;
     private int locationsNumber;
     private QualityCounter qualityCounter;
     private int percentageProbabilityOfMutation;
     private int percentageProbabilityOfCrossing;
     private int generationLimit;
+    private int theSameResultMaxCounter;
+    private String dataSetName;
+    long searchingTime;
 
-    GeneticAlgorithm(int populationSize, int locationsNumber, QualityCounter qualityCounter, int percentageProbabilityOfMutation, int percentageProbabilityOfCrossing, int generationLimit){
+    GeneticAlgorithm(int populationSize, int locationsNumber, QualityCounter qualityCounter, int percentageProbabilityOfMutation, int percentageProbabilityOfCrossing, int generationLimit, int theSameResultMaxCounter, String dataSetName){
         this.populationSize = populationSize;
         this.locationsNumber = locationsNumber;
         this.qualityCounter = qualityCounter;
         this.percentageProbabilityOfMutation = percentageProbabilityOfMutation;
         this.percentageProbabilityOfCrossing = percentageProbabilityOfCrossing;
         this.generationLimit = generationLimit;
+        this.theSameResultMaxCounter = theSameResultMaxCounter;
+        this.dataSetName = dataSetName;
     }
 
     public int getPopulationSize() {
@@ -41,47 +44,65 @@ public class GeneticAlgorithm {
     }
 
     public void run() throws FileNotFoundException {
-        int actualResult;
+        int bestResult;
+        int worstResult;
         int previousResult = 0;
         int generationNumber = 1;
+        int theSameResultCounter = 0;
+        long startTime = System.currentTimeMillis();
 
         Population population = new Population(populationSize, locationsNumber, qualityCounter, percentageProbabilityOfMutation, percentageProbabilityOfCrossing);
-        CSV csv = new CSV("test");
+        CSV csv = new CSV(dataSetName);
 
-        actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+        bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
 
+        csv.appendToFile(Integer.toString(generationNumber));
+        csv.nextColumn();
+        csv.appendToFile(Integer.toString(bestResult));
+        csv.nextLine();
 
-        while(!isEnd3(generationNumber)){
-            previousResult = actualResult;
+        while(!isEnd3(generationNumber, theSameResultCounter)){
+            previousResult = bestResult;
 
             population.makeNextGeneration(population.actualGeneration);
             generationNumber++;
 
-            actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+            bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+            worstResult = qualityCounter.count(qualityCounter.findWorstIndividual(population.actualGeneration));
+
+            if(bestResult == previousResult)
+                theSameResultCounter++;
+            else
+                theSameResultCounter = 0;
 
             csv.appendToFile(Integer.toString(generationNumber));
             csv.nextColumn();
-            csv.appendToFile(Integer.toString(actualResult));
+            csv.appendToFile(Integer.toString(bestResult));
             csv.nextLine();
-            System.out.println("ACTUAL RESULT ---> " + actualResult);
+            System.out.println("BEST RESULT ---> " + bestResult);
+            System.out.println("WORST RESULT --> " + worstResult);
         }
 
+        long finishTime = System.currentTimeMillis();
+        searchingTime = finishTime - startTime;
+        csv.nextColumn();
+        csv.nextColumn();
+        csv.nextColumn();
+        csv.appendToFile(Long.toString(searchingTime));
         csv.saveFile();
     }
 
     private boolean isEnd(int actualResult, int previousResult){
-        System.out.println("Jestem w metodzie isEnd");
         if(abs(previousResult - actualResult) <= FINAL_DIFFERENCE_VALUE)
             return true;
         else return false;
     }
 
-    private boolean isEnd3(int actualGenerationNumber){
-        return actualGenerationNumber > generationLimit;
+    private boolean isEnd3(int actualGenerationNumber, int theSameResultCounter){
+        return actualGenerationNumber > generationLimit || theSameResultCounter > theSameResultMaxCounter;
     }
 
     private boolean isEnd2(int actualResult, int previousResult){
-        System.out.println("Jestem w metodzie isEnd");
         if(actualResult == 1652)
             return true;
         else return false;
@@ -95,7 +116,6 @@ public class GeneticAlgorithm {
     }
 
     public void printPopulation(int[][] population){
-        System.out.println("__THE POPULATION__");
         for(int i = 0; i < populationSize; i++){
             printVector(population[i]);
         }

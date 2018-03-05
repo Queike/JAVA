@@ -43,4 +43,28 @@ public class QualityCounter {
 
         return bestIndividual;
     }
+
+    public int[] findWorstIndividual(int [][] array){
+        int result;
+        int worstResult = 0;
+        int[] bestIndividual = array[0];
+
+        for(int actualIndividualNumber = 0; actualIndividualNumber < array.length; actualIndividualNumber++){
+
+            result = 0;
+
+            for (int actualLocationNumber = 0; actualLocationNumber < N; actualLocationNumber++){
+                for (int actualFactoryNumber = 0; actualFactoryNumber < N; actualFactoryNumber++){
+                    result += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[array[actualIndividualNumber][actualLocationNumber]][array[actualIndividualNumber][actualFactoryNumber]]);
+                }
+            }
+
+            if(result > worstResult || worstResult == 0){
+                bestIndividual = array[actualIndividualNumber];
+                worstResult = result;
+            }
+        }
+
+        return bestIndividual;
+    }
 }
