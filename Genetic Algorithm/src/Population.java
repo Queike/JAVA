@@ -5,8 +5,10 @@ public class Population {
     // change individuals to solutions !!!!!!!!!!
 
     private static final int PERCENTAGE_OF_INDIVIDUALS_TO_MUTATION = 10;
+    private final int NUMBER_OF_CROSSING_TYPES = 3;
     private final int PERCENTAGE_OF_INDIVIDUALS_TO_CROSS = 10;
-    private final int PERCENTAGE_PROBABILITY_OF_CROSSING = 30;
+    private final int PERCENTAGE_PROBABILITY_OF_CROSSING = 70;
+    private final int PERCENTAGE_PROBABILITY_OF_MUTATION = 20;
 
     private int populationSize;
     private static int locationsNumber;
@@ -14,6 +16,7 @@ public class Population {
     private QualityCounter qualityCounter;
     private int[][] distanceMatrix;
     private int[][] flowMatrix;
+    Random generator;
 
     public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter, int[][] distanceMatrix, int[][] flowMatrix){
         this.populationSize = populationSize;
@@ -21,6 +24,7 @@ public class Population {
         this.qualityCounter = qualityCounter;
         this.distanceMatrix = distanceMatrix;
         this.flowMatrix = flowMatrix;
+        generator = new Random();
         actualGeneration = generateRandomlyFirstGeneration();
     }
 
@@ -64,143 +68,33 @@ public class Population {
         return vector;
     }
 
-    public static int[] swapMutation(int[] parent){
-        int[] parentClone = parent.clone();
+
+    public static int[] swapMutation(int[] solution){
         Random generator = new Random();
 
-        int factoryLocation1 = generator.nextInt(locationsNumber);
-        int factoryLocation2 = generator.nextInt(locationsNumber);
-
-        while(factoryLocation1 == factoryLocation2)
-            factoryLocation2 = generator.nextInt(locationsNumber);
-
-        int temp = parentClone[factoryLocation1];
-        parentClone[factoryLocation1] = parentClone[factoryLocation2];
-        parentClone[factoryLocation2] = temp;
-
-        return parentClone;
-    }
-
-    public static int[][] swapMutation(int[][] population){
-
-        Random generator = new Random();
-        int selectedSolution;
-        int firstFactoryToMutation;
-        int secondFactoryToMutation = -1;
-
-        for(int mutationLoop = 0; mutationLoop < population.length * PERCENTAGE_OF_INDIVIDUALS_TO_MUTATION; mutationLoop++){
-            selectedSolution = generator.nextInt(population.length);
-            firstFactoryToMutation = generator.nextInt(locationsNumber);
-            while (secondFactoryToMutation == firstFactoryToMutation || secondFactoryToMutation == -1){
-                secondFactoryToMutation = generator.nextInt(locationsNumber);
-            }
-
-            int savedFactory = population[selectedSolution][firstFactoryToMutation];
-            population[selectedSolution][firstFactoryToMutation] = population[selectedSolution][secondFactoryToMutation];
-            population[secondFactoryToMutation][secondFactoryToMutation] = savedFactory;
-
+        int indexOfFirstGenToSwap = generator.nextInt(locationsNumber);
+        int indexOfSecondGenToSwap = generator.nextInt(locationsNumber);
+        if(indexOfFirstGenToSwap == indexOfSecondGenToSwap){
+            indexOfSecondGenToSwap = generator.nextInt(locationsNumber);
         }
 
-        actualGeneration = population;
+        int savedGen = solution[indexOfFirstGenToSwap];
+        solution[indexOfFirstGenToSwap] = solution[indexOfSecondGenToSwap];
+        solution[indexOfSecondGenToSwap] = savedGen;
+
+        return solution;
+    }
+
+    public ArrayList<int[]> mutate(ArrayList<int[]> population){
+        for(int indexOfCurrentSolution = 0; indexOfCurrentSolution < populationSize; indexOfCurrentSolution++){
+            if(willBeMutated()){
+                population.set(indexOfCurrentSolution, swapMutation(population.get(indexOfCurrentSolution)));
+            }
+        }
+        actualGeneration = convertArrayListOfArraysToTwoDimArray(population);
         return population;
     }
 
-    public int[][] cross(int[][] individulasToCross){
-        int[][] solutionsAfterCrossing = new int[populationSize][locationsNumber];
-        Random generator = new Random();
-
-        int actualSolutionNumber = 0;
-
-        while(actualSolutionNumber < populationSize){
-            int[] firstParent = new int[locationsNumber];
-            int[] secondParent = new int[locationsNumber];
-
-            firstParent = individulasToCross[generator.nextInt(individulasToCross.length)];
-            solutionsAfterCrossing[actualSolutionNumber] = firstParent;
-            actualSolutionNumber++;
-            secondParent = individulasToCross[generator.nextInt(individulasToCross.length)];
-            solutionsAfterCrossing[actualSolutionNumber] = secondParent;
-            actualSolutionNumber++;
-
-            ArrayList<Integer> firstChild = new ArrayList<>();
-            ArrayList<Integer> secondChild = new ArrayList<>();
-
-            for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
-                firstChild.add(firstParent[actualGenNumber]);
-                secondChild.add(secondParent[actualGenNumber]);
-            }
-
-            for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
-                firstChild.add(secondParent[actualGenNumber]);
-                secondChild.add(firstParent[actualGenNumber]);
-            }
-
-            firstChild = repairChild(firstChild);
-            secondChild = repairChild(secondChild);
-
-
-            solutionsAfterCrossing[actualSolutionNumber] = firstChild.stream().mapToInt(i -> i).toArray();
-            actualSolutionNumber++;
-            solutionsAfterCrossing[actualSolutionNumber] = secondChild.stream().mapToInt(i -> i).toArray();
-            actualSolutionNumber++;
-
-        }
-
-        actualGeneration = solutionsAfterCrossing;
-        return solutionsAfterCrossing;
-    }
-
-    public ArrayList<ArrayList> cross(int[] firstParent, int[] secondParent){
-
-        Random generator = new Random();
-
-        ArrayList<Integer> firstChild = new ArrayList<>();
-        ArrayList<Integer> secondChild = new ArrayList<>();
-
-        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
-            firstChild.add(firstParent[actualGenNumber]);
-            secondChild.add(secondParent[actualGenNumber]);
-        }
-
-        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
-            firstChild.add(secondParent[actualGenNumber]);
-            secondChild.add(firstParent[actualGenNumber]);
-        }
-
-        firstChild = repairChild(firstChild);
-        secondChild = repairChild(secondChild);
-
-        ArrayList<ArrayList> children = new ArrayList<>();
-        children.add(firstChild);
-        children.add(secondChild);
-        return children;
-    }
-
-    public ArrayList<ArrayList> cross(ArrayList<Integer> firstParent, ArrayList<Integer> secondParent){
-
-        Random generator = new Random();
-
-        ArrayList<Integer> firstChild = new ArrayList<>();
-        ArrayList<Integer> secondChild = new ArrayList<>();
-
-        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
-            firstChild.add(firstParent.get(actualGenNumber));
-            secondChild.add(secondParent.get(actualGenNumber));
-        }
-
-        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
-            firstChild.add(secondParent.get(actualGenNumber));
-            secondChild.add(firstParent.get(actualGenNumber));
-        }
-
-        firstChild = repairChild(firstChild);
-        secondChild = repairChild(secondChild);
-
-        ArrayList<ArrayList> children = new ArrayList<>();
-        children.add(firstChild);
-        children.add(secondChild);
-        return children;
-    }
 
 
     public ArrayList<Integer> repairChild(ArrayList<Integer> child){
@@ -230,99 +124,389 @@ public class Population {
         return repairedChild;
     }
 
-    public int[][] selectIndividualsWithRoulette(){
-        int totalSum = 0;
-        int[][] chosenIndividuals = new int[PERCENTAGE_OF_INDIVIDUALS_TO_CROSS * populationSize / 100][locationsNumber];
-        ArrayList<Integer> indexesOfChosenIndividuals = new ArrayList<>();
 
-        System.out.println("Pierwszy znacznik w ruletce");
+    public int[] cross(int[] firstParent, int[] secondParent){
+        int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
+        int[] child = new int[locationsNumber];
+        int pointOfCrossing;
 
-        for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
-            totalSum += qualityCounter.count(actualGeneration[actualIndividual]);
-            System.out.println("Drugi znacznik w ruletce");
-        }
-
-        Random generator = new Random();
-        System.out.println("Trzeci znacznik w ruletce");
-
-        for(int actualChooseOfIndividual = 0; actualChooseOfIndividual < chosenIndividuals.length; actualChooseOfIndividual++){ // ---------------------------------------
-            int randomPartialSum = generator.nextInt(totalSum);
-            int partialSum = 0;
-            System.out.println("Czwarty znacznik w ruletce");
-
-            for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
-                System.out.println("Piaty znacznik w ruletce");
-                partialSum += qualityCounter.count(actualGeneration[actualIndividual]);
-                System.out.println("PARTIAL SUM = " + partialSum);
-                System.out.println("RANDOM PARTIAL SUM = " + randomPartialSum);
-                if(partialSum > randomPartialSum){
-                    System.out.println("indexesOfChosenIndividuals : " + indexesOfChosenIndividuals);
-                    System.out.println("actualIndividual : " + actualIndividual);
-                    if(!indexesOfChosenIndividuals.contains(actualIndividual)){
-                        System.out.println("Szosty znacznik w ruletce");
-                        chosenIndividuals[actualChooseOfIndividual] = actualGeneration[actualIndividual];
-                        indexesOfChosenIndividuals.add(actualIndividual);
-                        //actualIndividual++;                                                                                   // --------------------------------------------
-                    }
-
+        switch (crossingType){
+            case 0:
+                for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+                    child[actualGenNumber] = firstParent[actualGenNumber];
                 }
 
-            }
+                for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+                    child[actualGenNumber] = secondParent[actualGenNumber];
+                }
+                break;
+
+            case 1:
+                for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+                    child[actualGenNumber] = secondParent[actualGenNumber];
+                }
+
+                for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+                    child[actualGenNumber] = firstParent[actualGenNumber];
+                }
+                break;
+
+            case 2:
+                pointOfCrossing = generator.nextInt(locationsNumber);
+
+                for(int actualGenNumber = 0; actualGenNumber < pointOfCrossing; actualGenNumber++){
+                    child[actualGenNumber] = secondParent[actualGenNumber];
+                }
+
+                for(int actualGenNumber = pointOfCrossing; actualGenNumber < locationsNumber; actualGenNumber++){
+                    child[actualGenNumber] = firstParent[actualGenNumber];
+                }
+                break;
+
+            case 3:
+                pointOfCrossing = generator.nextInt(locationsNumber);
+
+                for(int actualGenNumber = 0; actualGenNumber < pointOfCrossing; actualGenNumber++){
+                    child[actualGenNumber] = firstParent[actualGenNumber];
+                }
+
+                for(int actualGenNumber = pointOfCrossing; actualGenNumber < locationsNumber; actualGenNumber++){
+                    child[actualGenNumber] = secondParent[actualGenNumber];
+                }
+                break;
         }
-        System.out.println("Wypisuje wybrane osobniki z metody ruletki ");
-        printPopulation(chosenIndividuals);
-        return chosenIndividuals;
+
+        ArrayList<Integer> childAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( child ).boxed().toArray( Integer[]::new )));
+        ArrayList<Integer> repairedChild = repairChild(childAL);
+        child = convertArrayListToArray(repairedChild);
+        return child;
     }
 
-    public ArrayList<int[]> createNewGenerationWithRouletteAndCross(){
-        ArrayList<int[]> currentPopulation = twoDArrayToArrayListOfArrays(actualGeneration);
-        ArrayList<int[]> newPopulation = new ArrayList<>();
+    public int[][] makeNextGeneration(int[][] thisGeneration){
+        int[][] nextGeneration = new int[populationSize][locationsNumber];
+        int[] bestSolutionFromThisGeneraion = qualityCounter.findBestIndividual(thisGeneration);
 
-        Random generator = new Random();
-        int firstIndexToPair;
-        int secondIndexToPair;
-        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+        nextGeneration[0] = bestSolutionFromThisGeneraion;
 
-        int[] bestIndividual = qualityCounter.findBestIndividual(actualGeneration);
-        int indexOfBestIndividual = currentPopulation.indexOf(bestIndividual);
-        newPopulation.add(currentPopulation.get(indexOfBestIndividual));
-        currentPopulation.remove(indexOfBestIndividual);
+        for(int actualSolution = 1; actualSolution < populationSize; actualSolution++){
+            if(willBeCrossed())
+                nextGeneration[actualSolution] = cross(thisGeneration[actualSolution], thisGeneration[generator.nextInt(populationSize)]);
+            else
+                nextGeneration[actualSolution] = thisGeneration[actualSolution];
 
-        while (currentPopulation.size() > 1){
-            firstIndexToPair = generator.nextInt(currentPopulation.size());
-            secondIndexToPair = generator.nextInt(currentPopulation.size());
-            if(firstIndexToPair == secondIndexToPair){
-                secondIndexToPair = generator.nextInt(currentPopulation.size());
-            }
+            if(willBeMutated())
+                nextGeneration[actualSolution] = swapMutation(nextGeneration[actualSolution]);
 
-            if(willBeCrossed()){
-                ArrayList<ArrayList> children = new ArrayList<ArrayList>();
-                children = cross(currentPopulation.get(firstIndexToPair), currentPopulation.get(secondIndexToPair));
-                newPopulation.add(convertArrayListToArray(children.get(0)));
-                newPopulation.add(convertArrayListToArray(children.get(1)));
-                if(secondIndexToPair == 0)
-                    currentPopulation.remove(secondIndexToPair);
-                else
-                    currentPopulation.remove(secondIndexToPair - 1);
-            }
-            else{
-                newPopulation.add(currentPopulation.get(firstIndexToPair));
-                newPopulation.add(currentPopulation.get(secondIndexToPair));
-                currentPopulation.remove(firstIndexToPair);
-                if(secondIndexToPair == 0)
-                    currentPopulation.remove(secondIndexToPair);
-                else
-                    currentPopulation.remove(secondIndexToPair - 1);
-            }
         }
 
-        if(currentPopulation.size() > 0){
-            newPopulation.add(currentPopulation.get(0));
-            currentPopulation.remove(0);
-        }
-        
-        return newPopulation;
+        actualGeneration = nextGeneration;
+        return nextGeneration;
     }
+
+//    public static int[] swapMutation(int[] parent){
+//        int[] parentClone = parent.clone();
+//        Random generator = new Random();
+//
+//        int factoryLocation1 = generator.nextInt(locationsNumber);
+//        int factoryLocation2 = generator.nextInt(locationsNumber);
+//
+//        while(factoryLocation1 == factoryLocation2)
+//            factoryLocation2 = generator.nextInt(locationsNumber);
+//
+//        int temp = parentClone[factoryLocation1];
+//        parentClone[factoryLocation1] = parentClone[factoryLocation2];
+//        parentClone[factoryLocation2] = temp;
+//
+//        return parentClone;
+//    }
+
+//    public static int[][] swapMutation(int[][] population){
+////
+////        Random generator = new Random();
+////        int selectedSolution;
+////        int firstFactoryToMutation;
+////        int secondFactoryToMutation = -1;
+////
+////        for(int mutationLoop = 0; mutationLoop < population.length * PERCENTAGE_OF_INDIVIDUALS_TO_MUTATION; mutationLoop++){
+////            selectedSolution = generator.nextInt(population.length);
+////            firstFactoryToMutation = generator.nextInt(locationsNumber);
+////            while (secondFactoryToMutation == firstFactoryToMutation || secondFactoryToMutation == -1){
+////                secondFactoryToMutation = generator.nextInt(locationsNumber);
+////            }
+////
+////            int savedFactory = population[selectedSolution][firstFactoryToMutation];
+////            population[selectedSolution][firstFactoryToMutation] = population[selectedSolution][secondFactoryToMutation];
+////            population[secondFactoryToMutation][secondFactoryToMutation] = savedFactory;
+////
+////        }
+////
+////        actualGeneration = population;
+////        return population;
+////    }
+
+
+//    public int[][] cross(int[][] individulasToCross){
+//        int[][] solutionsAfterCrossing = new int[populationSize][locationsNumber];
+//        Random generator = new Random();
+//
+//        int actualSolutionNumber = 0;
+//
+//        while(actualSolutionNumber < populationSize){
+//            int[] firstParent = new int[locationsNumber];
+//            int[] secondParent = new int[locationsNumber];
+//
+//            firstParent = individulasToCross[generator.nextInt(individulasToCross.length)];
+//            solutionsAfterCrossing[actualSolutionNumber] = firstParent;
+//            actualSolutionNumber++;
+//            secondParent = individulasToCross[generator.nextInt(individulasToCross.length)];
+//            solutionsAfterCrossing[actualSolutionNumber] = secondParent;
+//            actualSolutionNumber++;
+//
+//            ArrayList<Integer> firstChild = new ArrayList<>();
+//            ArrayList<Integer> secondChild = new ArrayList<>();
+//
+//            for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+//                firstChild.add(firstParent[actualGenNumber]);
+//                secondChild.add(secondParent[actualGenNumber]);
+//            }
+//
+//            for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+//                firstChild.add(secondParent[actualGenNumber]);
+//                secondChild.add(firstParent[actualGenNumber]);
+//            }
+//
+//            firstChild = repairChild(firstChild);
+//            secondChild = repairChild(secondChild);
+//
+//
+//            solutionsAfterCrossing[actualSolutionNumber] = firstChild.stream().mapToInt(i -> i).toArray();
+//            actualSolutionNumber++;
+//            solutionsAfterCrossing[actualSolutionNumber] = secondChild.stream().mapToInt(i -> i).toArray();
+//            actualSolutionNumber++;
+//
+//        }
+//
+//        actualGeneration = solutionsAfterCrossing;
+//        return solutionsAfterCrossing;
+//    }
+
+//    public ArrayList<ArrayList> cross(int[] firstParent, int[] secondParent){
+//
+//        Random generator = new Random();
+//
+//        ArrayList<Integer> firstChild = new ArrayList<>();
+//        ArrayList<Integer> secondChild = new ArrayList<>();
+//
+//        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+//            firstChild.add(firstParent[actualGenNumber]);
+//            secondChild.add(secondParent[actualGenNumber]);
+//        }
+//
+//        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+//            firstChild.add(secondParent[actualGenNumber]);
+//            secondChild.add(firstParent[actualGenNumber]);
+//        }
+//
+//        firstChild = repairChild(firstChild);
+//        secondChild = repairChild(secondChild);
+//
+//        ArrayList<ArrayList> children = new ArrayList<>();
+//        children.add(firstChild);
+//        children.add(secondChild);
+//        return children;
+//    }
+
+//    public ArrayList<ArrayList> cross(ArrayList<Integer> firstParent, ArrayList<Integer> secondParent){
+//
+//        Random generator = new Random();
+//
+//        ArrayList<Integer> firstChild = new ArrayList<>();
+//        ArrayList<Integer> secondChild = new ArrayList<>();
+//
+//        for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
+//            firstChild.add(firstParent.get(actualGenNumber));
+//            secondChild.add(secondParent.get(actualGenNumber));
+//        }
+//
+//        for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
+//            firstChild.add(secondParent.get(actualGenNumber));
+//            secondChild.add(firstParent.get(actualGenNumber));
+//        }
+//
+//        firstChild = repairChild(firstChild);
+//        secondChild = repairChild(secondChild);
+//
+//        ArrayList<ArrayList> children = new ArrayList<>();
+//        children.add(firstChild);
+//        children.add(secondChild);
+//        return children;
+//    }
+
+
+//    public int[][] selectIndividualsWithRoulette(){
+//        int totalSum = 0;
+//        int[][] chosenIndividuals = new int[PERCENTAGE_OF_INDIVIDUALS_TO_CROSS * populationSize / 100][locationsNumber];
+//        ArrayList<Integer> indexesOfChosenIndividuals = new ArrayList<>();
+//
+//        System.out.println("Pierwszy znacznik w ruletce");
+//
+//        for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
+//            totalSum += qualityCounter.count(actualGeneration[actualIndividual]);
+//            System.out.println("Drugi znacznik w ruletce");
+//        }
+//
+//        Random generator = new Random();
+//        System.out.println("Trzeci znacznik w ruletce");
+//
+//        for(int actualChooseOfIndividual = 0; actualChooseOfIndividual < chosenIndividuals.length; actualChooseOfIndividual++){ // ---------------------------------------
+//            int randomPartialSum = generator.nextInt(totalSum);
+//            int partialSum = 0;
+//            System.out.println("Czwarty znacznik w ruletce");
+//
+//            for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
+//                System.out.println("Piaty znacznik w ruletce");
+//                partialSum += qualityCounter.count(actualGeneration[actualIndividual]);
+//                System.out.println("PARTIAL SUM = " + partialSum);
+//                System.out.println("RANDOM PARTIAL SUM = " + randomPartialSum);
+//                if(partialSum > randomPartialSum){
+//                    System.out.println("indexesOfChosenIndividuals : " + indexesOfChosenIndividuals);
+//                    System.out.println("actualIndividual : " + actualIndividual);
+//                    if(!indexesOfChosenIndividuals.contains(actualIndividual)){
+//                        System.out.println("Szosty znacznik w ruletce");
+//                        chosenIndividuals[actualChooseOfIndividual] = actualGeneration[actualIndividual];
+//                        indexesOfChosenIndividuals.add(actualIndividual);
+//                        //actualIndividual++;                                                                                   // --------------------------------------------
+//                    }
+//
+//                }
+//
+//            }
+//        }
+//        System.out.println("Wypisuje wybrane osobniki z metody ruletki ");
+//        printPopulation(chosenIndividuals);
+//        return chosenIndividuals;
+//    }
+
+//    public ArrayList<int[]> createNewGenerationWithBestAndCross(){
+//
+//        int percentOfBestToNewGeneration = 50;
+//        int firstIndexToPair;
+//        int secondIndexToPair;
+//        Random generator = new Random();
+//
+//        ArrayList<int[]> currentPopulation = twoDArrayToArrayListOfArrays(sortActualGenerationDesc());
+//        ArrayList<int[]> newPopulation = new ArrayList<>();
+//
+//
+//        for(int i = 0; i < percentOfBestToNewGeneration * populationSize / 100; i++){
+//            newPopulation.add(currentPopulation.get(i));
+//        }
+//
+//        while(newPopulation.size() < populationSize){
+//            firstIndexToPair = generator.nextInt(percentOfBestToNewGeneration * populationSize / 100);
+//            secondIndexToPair = generator.nextInt(percentOfBestToNewGeneration * populationSize / 100);
+//            while(firstIndexToPair == secondIndexToPair){
+//                secondIndexToPair = generator.nextInt(percentOfBestToNewGeneration * populationSize / 100);
+//            }
+//
+//            ArrayList<ArrayList> children = new ArrayList<ArrayList>();
+//            children = cross(newPopulation.get(firstIndexToPair), newPopulation.get(secondIndexToPair));
+//            newPopulation.add(convertArrayListToArray(children.get(0)));
+//            newPopulation.add(convertArrayListToArray(children.get(1)));
+//        }
+//
+//        actualGeneration = convertArrayListOfArraysToTwoDimArray(newPopulation);
+//        return newPopulation;
+//    }
+
+
+//    public ArrayList<int[]> createNewGenerationWithRouletteAndCross(){
+//        ArrayList<int[]> currentPopulation = twoDArrayToArrayListOfArrays(actualGeneration);
+//        ArrayList<int[]> newPopulation = new ArrayList<>();
+//
+//        Random generator = new Random();
+//        int firstIndexToPair;
+//        int secondIndexToPair;
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//
+//        int[] bestIndividual = qualityCounter.findBestIndividual(actualGeneration);
+//        int indexOfBestIndividual = currentPopulation.indexOf(bestIndividual);
+//        newPopulation.add(currentPopulation.get(indexOfBestIndividual));
+//        currentPopulation.remove(indexOfBestIndividual);
+//
+//        while (currentPopulation.size() > 1){
+//            firstIndexToPair = generator.nextInt(currentPopulation.size());
+//            secondIndexToPair = generator.nextInt(currentPopulation.size());
+//            if(firstIndexToPair == secondIndexToPair){
+//                secondIndexToPair = generator.nextInt(currentPopulation.size());
+//            }
+//
+//            if(willBeCrossed()){
+//                ArrayList<ArrayList> children = new ArrayList<ArrayList>();
+//                children = cross(currentPopulation.get(firstIndexToPair), currentPopulation.get(secondIndexToPair));
+//                newPopulation.add(convertArrayListToArray(children.get(0)));
+//                newPopulation.add(convertArrayListToArray(children.get(1)));
+//                if(secondIndexToPair == 0)
+//                    currentPopulation.remove(secondIndexToPair);
+//                else
+//                    currentPopulation.remove(secondIndexToPair - 1);
+//            }
+//            else{
+//                newPopulation.add(currentPopulation.get(firstIndexToPair));
+//                newPopulation.add(currentPopulation.get(secondIndexToPair));
+//                currentPopulation.remove(firstIndexToPair);
+//                if(secondIndexToPair == 0)
+//                    currentPopulation.remove(secondIndexToPair);
+//                else
+//                    currentPopulation.remove(secondIndexToPair - 1);
+//            }
+//        }
+//
+//        if(currentPopulation.size() > 0){
+//            newPopulation.add(currentPopulation.get(0));
+//            currentPopulation.remove(0);
+//        }
+//
+//        return newPopulation;
+//    }
+
+//    public int[][] sortActualGenerationDesc(){
+//        ArrayList<int[]> sortedGeneration = new ArrayList<>();
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//        sortedGeneration.add(actualGeneration[0]);
+//
+//        for(int index = 1; index < actualGeneration.length; index++){
+//            int cost = qualityCounter.count(actualGeneration[index]);
+//            int currentElementCost = qualityCounter.count(actualGeneration[index]);
+//
+//            int t = sortedGeneration.size();
+//
+//            for (int j = 0; j < t; j++) {
+//                if(qualityCounter.count(sortedGeneration.get(j)) > currentElementCost){
+//                    sortedGeneration.add(j, actualGeneration[index]);
+//                    break;
+//                }
+//                if(j == sortedGeneration.size() - 1)
+//                    sortedGeneration.add(0, actualGeneration[index]);
+//            }
+//        }
+//
+//
+//        actualGeneration = convertArrayListOfArraysToTwoDimArray(sortedGeneration);
+//
+//        return actualGeneration;
+//    }
+
+
+
+//    public List<Integer[]> twoDArrayToList(Integer[][] twoDArray) {
+//        List<Integer[]> list = new ArrayList<>();
+//        for (Integer[] array : twoDArray) {
+//            list.addAll(Arrays.asList(array));
+//        }
+//        return list;
+//    }
+
 
     public static int[] convertArrayListToArray(List<Integer> integers)
     {
@@ -343,14 +527,14 @@ public class Population {
         else return false;
     }
 
+    public boolean willBeMutated(){
+        Random generator = new Random();
+        int randomPoint = generator.nextInt(100) + 1;
+        if(randomPoint < PERCENTAGE_PROBABILITY_OF_MUTATION)
+            return true;
+        else return false;
+    }
 
-//    public List<Integer[]> twoDArrayToList(Integer[][] twoDArray) {
-//        List<Integer[]> list = new ArrayList<>();
-//        for (Integer[] array : twoDArray) {
-//            list.addAll(Arrays.asList(array));
-//        }
-//        return list;
-//    }
 
     public ArrayList<int[]> twoDArrayToArrayListOfArrays(int[][] twoDArray){
         ArrayList<int[]> arrayListOfOneDArrays = new ArrayList<>();
@@ -373,5 +557,14 @@ public class Population {
         for(int i = 0; i < population.length; i++){
             printVector(population[i]);
         }
+    }
+
+    public int[][] convertArrayListOfArraysToTwoDimArray(ArrayList<int[]> arrayList){
+        int[][] array = new int[arrayList.size()][];
+        for (int i = 0; i < arrayList.size(); i++) {
+            int[] row = arrayList.get(i);
+            array[i] = row;
+        }
+        return array;
     }
 }

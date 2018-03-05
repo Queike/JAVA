@@ -2,7 +2,7 @@ import static java.lang.Math.abs;
 
 public class GeneticAlgorithm {
 
-    private final int FINAL_DIFFERENCE_VALUE = 2;
+    private final int FINAL_DIFFERENCE_VALUE = 0;
 
     private int populationSize;
     private int locationsNumber;
@@ -16,38 +16,95 @@ public class GeneticAlgorithm {
         this.flowMatrix = flowMatrix;
     }
 
-    public void run(){
+//    public void run(){
+//
+//        int actualResult;
+//        int previousResult = 0;
+//
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//        Population population = new Population(populationSize, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
+//        System.out.println("Best generation --> " + qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration)));
+//        actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+//
+//        System.out.println("To zwroci metoda isEnd " + isEnd(actualResult, previousResult));
+//
+//        while(!isEnd(actualResult, previousResult)){
+//            previousResult = actualResult;
+//
+//            population.cross(population.selectIndividualsWithRoulette());
+//            //printPopulation(population.cross(population.selectIndividualsWithRoulette()));
+//            population.swapMutation(population.actualGeneration);
+//
+//            actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+//
+//            System.out.println("ACTUAL RESULT ---> " + actualResult);
+//        }
+//
+//
+//
+//
+//    }
 
+//    public void run(){
+//        int actualResult;
+//        int previousResult = 0;
+//
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//        Population population = new Population(populationSize, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
+//
+//
+//        System.out.println("Best generation --> " + qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration)));
+//        actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+//
+//        System.out.println("To zwroci metoda isEnd " + isEnd(actualResult, previousResult));
+//
+//
+//        while(!isEnd2(actualResult, previousResult)){
+//            previousResult = actualResult;
+//
+//            population.mutate(population.createNewGenerationWithBestAndCross());
+//
+//            actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+//
+//            System.out.println("ACTUAL RESULT ---> " + actualResult);
+//        }
+//    }
+
+    public void run(){
         int actualResult;
         int previousResult = 0;
 
         QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
         Population population = new Population(populationSize, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
-        System.out.println("Best generation --> " + qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration)));
+
+
+//        System.out.println("Best generation --> " + qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration)));
         actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
 
-        System.out.println("To zwroci metoda isEnd " + isEnd(actualResult, previousResult));
+//        System.out.println("To zwroci metoda isEnd " + isEnd(actualResult, previousResult));
 
-        while(!isEnd(actualResult, previousResult)){
+
+        while(!isEnd2(actualResult, previousResult)){
             previousResult = actualResult;
 
-            population.cross(population.selectIndividualsWithRoulette());
-            //printPopulation(population.cross(population.selectIndividualsWithRoulette()));
-            population.swapMutation(population.actualGeneration);
+            population.makeNextGeneration(population.actualGeneration);
 
             actualResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
 
             System.out.println("ACTUAL RESULT ---> " + actualResult);
         }
-
-
-
-
     }
 
     private boolean isEnd(int actualResult, int previousResult){
         System.out.println("Jestem w metodzie isEnd");
         if(abs(previousResult - actualResult) <= FINAL_DIFFERENCE_VALUE)
+            return true;
+        else return false;
+    }
+
+    private boolean isEnd2(int actualResult, int previousResult){
+        System.out.println("Jestem w metodzie isEnd");
+        if(actualResult == 1652)
             return true;
         else return false;
     }

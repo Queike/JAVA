@@ -21,10 +21,18 @@ public class Main {
 //        System.out.println();
         //runGaForAllTestSets();
         //crossingTest();
-        generatingNewGenerationTest();
+        //generatingNewGenerationTest();
+
+//        runGaAlgorithm();
+
+        int[] test1 = {1, 2, 3};
+        int[] test2 = test1;
+        test1[1] = 8;
+
+        printVector(test2);
     }
 
-    public static void generatingNewGenerationTest() throws IOException{
+    public static void runGaAlgorithm() throws IOException {
         String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[0] + END_OF_TEST_DATA_PATH;
         WebReader webReader = new WebReader(path);
         WebReader readData = webReader.read();
@@ -36,40 +44,56 @@ public class Main {
         QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
         Population population = new Population(100, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
 
-        ArrayList<int[]> newGeneration = new ArrayList<>();
-        newGeneration = population.createNewGenerationWithRouletteAndCross();
-
-        for(int[] vector : newGeneration){
-            printVector(vector);
-        }
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(POPULATION_SIZE, locationsNumber, distanceMatrix, flowMatrix);
+        geneticAlgorithm.run();
     }
 
-    public static void crossingTest() throws IOException {
-        String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[0] + END_OF_TEST_DATA_PATH;
-        WebReader webReader = new WebReader(path);
-        WebReader readData = webReader.read();
+//    public static void generatingNewGenerationTest() throws IOException{
+//        String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[0] + END_OF_TEST_DATA_PATH;
+//        WebReader webReader = new WebReader(path);
+//        WebReader readData = webReader.read();
+//
+//        locationsNumber = readData.getNumberN();
+//        distanceMatrix = readData.getMatrix1();
+//        flowMatrix = readData.getMatrix2();
+//
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//        Population population = new Population(100, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
+//
+//        ArrayList<int[]> newGeneration = new ArrayList<>();
+//        newGeneration = population.createNewGenerationWithRouletteAndCross();
+//
+//        for(int[] vector : newGeneration){
+//            printVector(vector);
+//        }
+//    }
 
-        locationsNumber = readData.getNumberN();
-        distanceMatrix = readData.getMatrix1();
-        flowMatrix = readData.getMatrix2();
-
-        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
-        Population population = new Population(100, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
-
-        System.out.print("Wektor pierwszy : ");
-        population.printVector(population.actualGeneration[0]);
-        System.out.println();
-        System.out.print("Wektor drugi : ");
-        population.printVector(population.actualGeneration[1]);
-        System.out.println();
-
-        ArrayList<ArrayList> crossedChildren;
-        crossedChildren = population.cross(population.actualGeneration[0], population.actualGeneration[1]);
-
-        System.out.println("Dziecko pierwsze : " + crossedChildren.get(0));
-        System.out.println("Dziecko drugie : " + crossedChildren.get(1));
-
-    }
+//    public static void crossingTest() throws IOException {
+//        String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[0] + END_OF_TEST_DATA_PATH;
+//        WebReader webReader = new WebReader(path);
+//        WebReader readData = webReader.read();
+//
+//        locationsNumber = readData.getNumberN();
+//        distanceMatrix = readData.getMatrix1();
+//        flowMatrix = readData.getMatrix2();
+//
+//        QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
+//        Population population = new Population(100, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
+//
+//        System.out.print("Wektor pierwszy : ");
+//        population.printVector(population.actualGeneration[0]);
+//        System.out.println();
+//        System.out.print("Wektor drugi : ");
+//        population.printVector(population.actualGeneration[1]);
+//        System.out.println();
+//
+//        ArrayList<ArrayList> crossedChildren;
+//        crossedChildren = population.cross(population.actualGeneration[0], population.actualGeneration[1]);
+//
+//        System.out.println("Dziecko pierwsze : " + crossedChildren.get(0));
+//        System.out.println("Dziecko drugie : " + crossedChildren.get(1));
+//
+//    }
 
     private static void runGaForAllTestSets() throws IOException {
         for(int i = 0; i < NAMES_OF_DATA_SETS.length; i++){
