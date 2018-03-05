@@ -4,41 +4,42 @@ public class Population {
 
     // change individuals to solutions !!!!!!!!!!
 
-    private static final int PERCENTAGE_OF_INDIVIDUALS_TO_MUTATION = 10;
     private final int NUMBER_OF_CROSSING_TYPES = 3;
-    private final int PERCENTAGE_OF_INDIVIDUALS_TO_CROSS = 10;
-    private final int PERCENTAGE_PROBABILITY_OF_CROSSING = 70;
-    private final int PERCENTAGE_PROBABILITY_OF_MUTATION = 20;
 
     private int populationSize;
     private static int locationsNumber;
     public static int[][] actualGeneration;
     private QualityCounter qualityCounter;
-    private int[][] distanceMatrix;
-    private int[][] flowMatrix;
+    private int percentageProbabilityOfMutation;
+    private int percentageProbabilityOfCrossing;
     Random generator;
 
-    public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter, int[][] distanceMatrix, int[][] flowMatrix){
+    public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter, int percentageProbabilityOfMutation, int percentageProbabilityOfCrossing){
         this.populationSize = populationSize;
         this.locationsNumber = locationsNumber;
         this.qualityCounter = qualityCounter;
-        this.distanceMatrix = distanceMatrix;
-        this.flowMatrix = flowMatrix;
+        this.percentageProbabilityOfMutation = percentageProbabilityOfMutation;
+        this.percentageProbabilityOfCrossing = percentageProbabilityOfCrossing;
         generator = new Random();
         actualGeneration = generateRandomlyFirstGeneration();
     }
 
+    public int getPercentageProbabilityOfMutation() {
+        return percentageProbabilityOfMutation;
+    }
+
+    public int getPercentageProbabilityOfCrossing(){
+        return percentageProbabilityOfCrossing;
+    }
+
     public int[][] generateRandomlyFirstGeneration(){
         int[][] generation = new int[populationSize][locationsNumber];
-
-        Random generator = new Random();
 
         for(int actualIndividualNumber = 0; actualIndividualNumber < populationSize; actualIndividualNumber++){
             for(int actualLocationNumber = 0; actualLocationNumber < locationsNumber; actualLocationNumber++){
                 generation[actualIndividualNumber] = generateVector();
             }
         }
-
         return generation;
     }
 
@@ -64,7 +65,6 @@ public class Population {
             position++;
         }
 
-//        printVector(vector);
         return vector;
     }
 
@@ -91,7 +91,8 @@ public class Population {
                 population.set(indexOfCurrentSolution, swapMutation(population.get(indexOfCurrentSolution)));
             }
         }
-        actualGeneration = convertArrayListOfArraysToTwoDimArray(population);
+        int[][] src = convertArrayListOfArraysToTwoDimArray(population);
+        System.arraycopy( src, 0, actualGeneration, 0, src.length );
         return population;
     }
 
@@ -132,47 +133,31 @@ public class Population {
 
         switch (crossingType){
             case 0:
-                for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
-                    child[actualGenNumber] = firstParent[actualGenNumber];
-                }
+                System.arraycopy(firstParent, 0, child, 0, locationsNumber / 2);
 
-                for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
-                    child[actualGenNumber] = secondParent[actualGenNumber];
-                }
+                System.arraycopy(secondParent, locationsNumber / 2, child, locationsNumber / 2, locationsNumber - locationsNumber / 2);
                 break;
 
             case 1:
-                for(int actualGenNumber = 0; actualGenNumber < locationsNumber/2; actualGenNumber++){
-                    child[actualGenNumber] = secondParent[actualGenNumber];
-                }
+                System.arraycopy(secondParent, 0, child, 0, locationsNumber / 2);
 
-                for(int actualGenNumber = locationsNumber/2; actualGenNumber < locationsNumber; actualGenNumber++){
-                    child[actualGenNumber] = firstParent[actualGenNumber];
-                }
+                System.arraycopy(firstParent, locationsNumber / 2, child, locationsNumber / 2, locationsNumber - locationsNumber / 2);
                 break;
 
             case 2:
                 pointOfCrossing = generator.nextInt(locationsNumber);
 
-                for(int actualGenNumber = 0; actualGenNumber < pointOfCrossing; actualGenNumber++){
-                    child[actualGenNumber] = secondParent[actualGenNumber];
-                }
+                System.arraycopy(secondParent, 0, child, 0, pointOfCrossing);
 
-                for(int actualGenNumber = pointOfCrossing; actualGenNumber < locationsNumber; actualGenNumber++){
-                    child[actualGenNumber] = firstParent[actualGenNumber];
-                }
+                System.arraycopy(firstParent, pointOfCrossing, child, pointOfCrossing, locationsNumber - pointOfCrossing);
                 break;
 
             case 3:
                 pointOfCrossing = generator.nextInt(locationsNumber);
 
-                for(int actualGenNumber = 0; actualGenNumber < pointOfCrossing; actualGenNumber++){
-                    child[actualGenNumber] = firstParent[actualGenNumber];
-                }
+                System.arraycopy(firstParent, 0, child, 0, pointOfCrossing);
 
-                for(int actualGenNumber = pointOfCrossing; actualGenNumber < locationsNumber; actualGenNumber++){
-                    child[actualGenNumber] = secondParent[actualGenNumber];
-                }
+                System.arraycopy(secondParent, pointOfCrossing, child, pointOfCrossing, locationsNumber - pointOfCrossing);
                 break;
         }
 
@@ -508,58 +493,51 @@ public class Population {
 //    }
 
 
-    public static int[] convertArrayListToArray(List<Integer> integers)
+    private static int[] convertArrayListToArray(List<Integer> integers)
     {
         int[] ret = new int[integers.size()];
         Iterator<Integer> iterator = integers.iterator();
         for (int i = 0; i < ret.length; i++)
         {
-            ret[i] = iterator.next().intValue();
+            ret[i] = iterator.next();
         }
         return ret;
     }
 
-    public boolean willBeCrossed(){
+    private boolean willBeCrossed(){
         Random generator = new Random();
         int randomPoint = generator.nextInt(100) + 1;
-        if(randomPoint < PERCENTAGE_PROBABILITY_OF_CROSSING)
-            return true;
-        else return false;
+        return randomPoint < percentageProbabilityOfCrossing;
     }
 
-    public boolean willBeMutated(){
+    private boolean willBeMutated(){
         Random generator = new Random();
         int randomPoint = generator.nextInt(100) + 1;
-        if(randomPoint < PERCENTAGE_PROBABILITY_OF_MUTATION)
-            return true;
-        else return false;
+        return randomPoint < percentageProbabilityOfMutation;
     }
 
 
     public ArrayList<int[]> twoDArrayToArrayListOfArrays(int[][] twoDArray){
-        ArrayList<int[]> arrayListOfOneDArrays = new ArrayList<>();
 
-        arrayListOfOneDArrays.addAll(Arrays.asList(twoDArray));
-
-        return arrayListOfOneDArrays;
+        return new ArrayList<>(Arrays.asList(twoDArray));
     }
 
 
-    public void printVector(int [] vector){
-        for(int i = 0; i < vector.length ; i++) {
-            System.out.print(vector[i] + " ");
+    private void printVector(int[] vector){
+        for (int aVector : vector) {
+            System.out.print(aVector + " ");
         }
         System.out.println();
     }
 
     public void printPopulation(int[][] population){
         System.out.println("__THE POPULATION__");
-        for(int i = 0; i < population.length; i++){
-            printVector(population[i]);
+        for (int[] aPopulation : population) {
+            printVector(aPopulation);
         }
     }
 
-    public int[][] convertArrayListOfArraysToTwoDimArray(ArrayList<int[]> arrayList){
+    private int[][] convertArrayListOfArraysToTwoDimArray(ArrayList<int[]> arrayList){
         int[][] array = new int[arrayList.size()][];
         for (int i = 0; i < arrayList.size(); i++) {
             int[] row = arrayList.get(i);

@@ -37,6 +37,7 @@ public class QualityCounter {
 
             if(result < bestResult || bestResult == 0){
                 bestIndividual = array[actualIndividualNumber];
+                bestResult = result;
             }
         }
 

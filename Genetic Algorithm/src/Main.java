@@ -7,7 +7,10 @@ public class Main {
     private static final String END_OF_TEST_DATA_PATH = ".dat";
     private static final String [] NAMES_OF_DATA_SETS = {"had12", "had14", "had16", "had18", "had20"};
 
+    private static final int PERCENTAGE_PROBABILITY_OF_CROSSING = 70;
+    private static final int PERCENTAGE_PROBABILITY_OF_MUTATION = 20;
     private static final int POPULATION_SIZE = 100;
+    private static final int GENERATION_LIMIT = 50;
 
     private static int locationsNumber;
     private static int [][] distanceMatrix;
@@ -23,13 +26,9 @@ public class Main {
         //crossingTest();
         //generatingNewGenerationTest();
 
-//        runGaAlgorithm();
+        runGaAlgorithm();
 
-        int[] test1 = {1, 2, 3};
-        int[] test2 = test1;
-        test1[1] = 8;
 
-        printVector(test2);
     }
 
     public static void runGaAlgorithm() throws IOException {
@@ -42,9 +41,9 @@ public class Main {
         flowMatrix = readData.getMatrix2();
 
         QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
-        Population population = new Population(100, locationsNumber, qualityCounter, distanceMatrix, flowMatrix);
+        Population population = new Population(100, locationsNumber, qualityCounter, PERCENTAGE_PROBABILITY_OF_MUTATION, PERCENTAGE_PROBABILITY_OF_CROSSING);
 
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(POPULATION_SIZE, locationsNumber, distanceMatrix, flowMatrix);
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(POPULATION_SIZE, locationsNumber, qualityCounter, PERCENTAGE_PROBABILITY_OF_MUTATION, PERCENTAGE_PROBABILITY_OF_CROSSING, GENERATION_LIMIT);
         geneticAlgorithm.run();
     }
 
@@ -100,12 +99,13 @@ public class Main {
             String path = BEGINNING_OF_TEST_DATA_PATH + NAMES_OF_DATA_SETS[i] + END_OF_TEST_DATA_PATH;
             WebReader webReader = new WebReader(path);
             WebReader readData = webReader.read();
+            QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
 
             locationsNumber = readData.getNumberN();
             distanceMatrix = readData.getMatrix1();
             flowMatrix = readData.getMatrix2();
 
-            GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(POPULATION_SIZE, locationsNumber, distanceMatrix, flowMatrix);
+            GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(POPULATION_SIZE, locationsNumber, qualityCounter, PERCENTAGE_PROBABILITY_OF_MUTATION, PERCENTAGE_PROBABILITY_OF_CROSSING, GENERATION_LIMIT);
             geneticAlgorithm.run();
         }
     }
