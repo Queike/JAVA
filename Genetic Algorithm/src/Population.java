@@ -12,7 +12,7 @@ public class Population {
     private QualityCounter qualityCounter;
     private int percentageProbabilityOfMutation;
     private int percentageProbabilityOfCrossing;
-    Random generator;
+    private Random generator;
 
     public Population(int populationSize, int locationsNumber, QualityCounter qualityCounter, int percentageProbabilityOfMutation, int percentageProbabilityOfCrossing){
         this.populationSize = populationSize;
@@ -32,7 +32,7 @@ public class Population {
         return percentageProbabilityOfCrossing;
     }
 
-    public int[][] generateRandomlyFirstGeneration(){
+    private int[][] generateRandomlyFirstGeneration(){
         int[][] generation = new int[populationSize][locationsNumber];
 
         for(int actualIndividualNumber = 0; actualIndividualNumber < populationSize; actualIndividualNumber++){

@@ -5,6 +5,7 @@ import static java.lang.Math.abs;
 public class GeneticAlgorithm {
 
     private final int FINAL_DIFFERENCE_VALUE = 0;
+    private final int FINAL_TEST_LOOPS = 10;
 
     private int populationSize;
     private int locationsNumber;
@@ -44,52 +45,65 @@ public class GeneticAlgorithm {
     }
 
     public void run() throws FileNotFoundException {
-        int bestResult;
-        int worstResult;
-        int previousResult = 0;
-        int generationNumber = 1;
-        int theSameResultCounter = 0;
-        long startTime = System.currentTimeMillis();
 
-        Population population = new Population(populationSize, locationsNumber, qualityCounter, percentageProbabilityOfMutation, percentageProbabilityOfCrossing);
-        CSV csv = new CSV(dataSetName);
+        int totalCostSum = 0;
+        int sumCount = 0;
 
-        bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+        for(int actualTestLoop = 0; actualTestLoop < FINAL_TEST_LOOPS; actualTestLoop++){
 
-        csv.appendToFile(Integer.toString(generationNumber));
-        csv.nextColumn();
-        csv.appendToFile(Integer.toString(bestResult));
-        csv.nextLine();
+            int bestResult;
+            int worstResult;
+            int previousResult = 0;
+            int generationNumber = 1;
+            int theSameResultCounter = 0;
+            long startTime = System.currentTimeMillis();
 
-        while(!isEnd3(generationNumber, theSameResultCounter)){
-            previousResult = bestResult;
-
-            population.makeNextGeneration(population.actualGeneration);
-            generationNumber++;
+            Population population = new Population(populationSize, locationsNumber, qualityCounter, percentageProbabilityOfMutation, percentageProbabilityOfCrossing);
+            CSV csv = new CSV(actualTestLoop + dataSetName);
 
             bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
-            worstResult = qualityCounter.count(qualityCounter.findWorstIndividual(population.actualGeneration));
-
-            if(bestResult == previousResult)
-                theSameResultCounter++;
-            else
-                theSameResultCounter = 0;
 
             csv.appendToFile(Integer.toString(generationNumber));
             csv.nextColumn();
             csv.appendToFile(Integer.toString(bestResult));
             csv.nextLine();
-            System.out.println("BEST RESULT ---> " + bestResult);
-            System.out.println("WORST RESULT --> " + worstResult);
+
+            while(!isEnd3(generationNumber, theSameResultCounter)){
+                previousResult = bestResult;
+
+                population.makeNextGeneration(population.actualGeneration);
+                generationNumber++;
+
+                bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+                worstResult = qualityCounter.count(qualityCounter.findWorstIndividual(population.actualGeneration));
+                totalCostSum += bestResult;
+                sumCount++;
+
+                if(bestResult == previousResult)
+                    theSameResultCounter++;
+                else
+                    theSameResultCounter = 0;
+
+                csv.appendToFile(Integer.toString(generationNumber));
+                csv.nextColumn();
+                csv.appendToFile(Integer.toString(bestResult));
+                csv.nextLine();
+//                System.out.println("BEST RESULT ---> " + bestResult);
+//                System.out.println("WORST RESULT --> " + worstResult);
+            }
+
+            long finishTime = System.currentTimeMillis();
+            searchingTime = finishTime - startTime;
+            csv.nextColumn();
+            csv.nextColumn();
+            csv.nextColumn();
+            csv.appendToFile(Long.toString(searchingTime));
+            csv.saveFile();
         }
 
-        long finishTime = System.currentTimeMillis();
-        searchingTime = finishTime - startTime;
-        csv.nextColumn();
-        csv.nextColumn();
-        csv.nextColumn();
-        csv.appendToFile(Long.toString(searchingTime));
-        csv.saveFile();
+        int totalAverage = totalCostSum / sumCount;
+        System.out.println("TOTAL AVERAGE FOR " + locationsNumber + " locations number : " + totalAverage);
+
     }
 
     private boolean isEnd(int actualResult, int previousResult){
@@ -109,15 +123,15 @@ public class GeneticAlgorithm {
     }
 
     public void printVector(int [] vector){
-        for(int i = 0; i < vector.length ; i++) {
-            System.out.print(vector[i] + " ");
+        for(int indexOfFactory = 0; indexOfFactory < vector.length ; indexOfFactory++) {
+            System.out.print(vector[indexOfFactory] + " ");
         }
         System.out.println();
     }
 
     public void printPopulation(int[][] population){
-        for(int i = 0; i < populationSize; i++){
-            printVector(population[i]);
+        for(int indexOfVector = 0; indexOfVector < populationSize; indexOfVector++){
+            printVector(population[indexOfVector]);
         }
     }
 
