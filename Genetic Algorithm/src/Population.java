@@ -74,7 +74,7 @@ public class Population {
 
         int indexOfFirstGenToSwap = generator.nextInt(locationsNumber);
         int indexOfSecondGenToSwap = generator.nextInt(locationsNumber);
-        if(indexOfFirstGenToSwap == indexOfSecondGenToSwap){
+        while(indexOfFirstGenToSwap == indexOfSecondGenToSwap){
             indexOfSecondGenToSwap = generator.nextInt(locationsNumber);
         }
 
