@@ -61,7 +61,7 @@ public class GeneticAlgorithm {
             Population population = new Population(populationSize, locationsNumber, qualityCounter, percentageProbabilityOfMutation, percentageProbabilityOfCrossing);
             CSV csv = new CSV(actualTestLoop + dataSetName);
 
-            bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
+            bestResult = qualityCounter.count(qualityCounter.findBestSolution(population.actualGeneration));
 
             csv.appendToFile(Integer.toString(generationNumber));
             csv.nextColumn();
@@ -74,8 +74,8 @@ public class GeneticAlgorithm {
                 population.makeNextGeneration(population.actualGeneration);
                 generationNumber++;
 
-                bestResult = qualityCounter.count(qualityCounter.findBestIndividual(population.actualGeneration));
-                worstResult = qualityCounter.count(qualityCounter.findWorstIndividual(population.actualGeneration));
+                bestResult = qualityCounter.count(qualityCounter.findBestSolution(population.actualGeneration));
+                worstResult = qualityCounter.count(qualityCounter.findBestSolution(population.actualGeneration));
                 totalCostSum += bestResult;
                 sumCount++;
 

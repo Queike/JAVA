@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class QualityCounter {
 
     private static int N;
@@ -10,61 +12,50 @@ public class QualityCounter {
         QualityCounter.flowMatrix = flowMatrix;
     }
 
-    public int count(int [] array){
-        int result = 0;
+    public int count(Solution solution){
+        int solutionValue = 0;
         for (int actualLocationNumber = 0; actualLocationNumber < N; actualLocationNumber++){
             for (int actualFactoryNumber = 0; actualFactoryNumber < N; actualFactoryNumber++){
-                result += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[array[actualLocationNumber]][array[actualFactoryNumber]]);
+                solutionValue += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[solution.getVector()[actualLocationNumber]][solution.getVector()[actualFactoryNumber]]);
             }
         }
-        return result;
+        solution.setCost(solutionValue);
+        return solutionValue;
     }
 
-    public int[] findBestIndividual(int [][] array){
-        int result;
-        int bestResult = 0;
-        int[] bestIndividual = array[0];
 
-        for(int actualIndividualNumber = 0; actualIndividualNumber < array.length; actualIndividualNumber++){
+    public Solution findBestSolution(ArrayList<Solution> generation){
+        int bestSolutionValue = 0;
+        Solution bestSolution = generation.get(0);
 
-            result = 0;
+        for (Solution solution : generation){
+            if(solution.getCost() == -1)
+                solution.setCost(count(solution));
 
-            for (int actualLocationNumber = 0; actualLocationNumber < N; actualLocationNumber++){
-                for (int actualFactoryNumber = 0; actualFactoryNumber < N; actualFactoryNumber++){
-                    result += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[array[actualIndividualNumber][actualLocationNumber]][array[actualIndividualNumber][actualFactoryNumber]]);
-                }
-            }
-
-            if(result < bestResult || bestResult == 0){
-                bestIndividual = array[actualIndividualNumber];
-                bestResult = result;
+            if(solution.getCost() < bestSolutionValue || bestSolutionValue == 0){
+                bestSolutionValue = solution.getCost();
+                bestSolution = solution;
             }
         }
 
-        return bestIndividual;
+        return bestSolution;
     }
 
-    public int[] findWorstIndividual(int [][] array){
-        int result;
-        int worstResult = 0;
-        int[] bestIndividual = array[0];
+    public Solution findWorstSolution(ArrayList<Solution> generation){
+        int worstSolutionValue = 0;
+        Solution worstSolution = generation.get(0);
 
-        for(int actualIndividualNumber = 0; actualIndividualNumber < array.length; actualIndividualNumber++){
+        for (Solution solution : generation){
+            if(solution.getCost() == -1)
+                solution.setCost(count(solution));
 
-            result = 0;
-
-            for (int actualLocationNumber = 0; actualLocationNumber < N; actualLocationNumber++){
-                for (int actualFactoryNumber = 0; actualFactoryNumber < N; actualFactoryNumber++){
-                    result += (distanceMatrix[actualLocationNumber][actualFactoryNumber]*flowMatrix[array[actualIndividualNumber][actualLocationNumber]][array[actualIndividualNumber][actualFactoryNumber]]);
-                }
-            }
-
-            if(result > worstResult || worstResult == 0){
-                bestIndividual = array[actualIndividualNumber];
-                worstResult = result;
+            if(solution.getCost() > worstSolutionValue || worstSolutionValue == 0){
+                worstSolutionValue = solution.getCost();
+                worstSolution = solution;
             }
         }
 
-        return bestIndividual;
+        return worstSolution;
     }
+
 }

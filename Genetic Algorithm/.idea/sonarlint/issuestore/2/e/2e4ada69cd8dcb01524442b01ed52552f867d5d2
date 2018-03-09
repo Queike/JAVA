@@ -1,0 +1,29 @@
+
+dsquid:UnusedPrivateMethod"<Remove this unused private "getRandomlyFirstFactory" method.(üÂö‡úÿÿÿÿ
+Asquid:S3010",Remove this assignment of "locationsNumber".(çËéù
+Esquid:S3010"+Remove this assignment of "distanceMatrix".(ì©ƒŠüÿÿÿÿ
+Asquid:S3010"'Remove this assignment of "flowMatrix".(ÀøòÚýÿÿÿÿ
+Lsquid:S1068"2Remove this unused "distanceMatrix" private field.(ñ¾£Ñùÿÿÿÿ
+Hsquid:S1068".Remove this unused "flowMatrix" private field.(¨ÍÏ²üÿÿÿÿ
+Csquid:S1068".Remove this unused "bestResult" private field.(ƒÛÌ
+Gsquid:S1068"2Remove this unused "bestBestResult" private field.(åÕ½Í
+Qsquid:S1068"7Remove this unused "numberOfBestFactory" private field.(óÄéÖùÿÿÿÿ
+Msquid:S1068"3Remove this unused "NUMBER_OF_LOOPS" private field.(Åè…úÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÿ—äí
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(çÍ›ûÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¡…»
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ô’¥üÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¯²±Ñ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(š‡¿¥þÿÿÿÿ
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‡°²V
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(€þñœ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ªÚÿÞ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(à¶‘üÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‰Ì—úøÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+M
+squid:S106"9Replace this use of System.out or System.err by a logger.(Š›‹è
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ
+1squid:S1220""Move this file to a named package.
+usquid:S00116"ZRename this field "NUMBER_OF_LOOPS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Åè…úÿÿÿÿ

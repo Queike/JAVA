@@ -1,0 +1,25 @@
+
+Vsquid:UnusedPrivateMethod"3Remove this unused private "generateVector" method.(¸µ²ó
+Fsquid:S3010",Remove this assignment of "locationsNumber".(º¶³¾ùÿÿÿÿ
+@squid:S3010"+Remove this assignment of "distanceMatrix".(ÀòæÔ
+<squid:S3010"'Remove this assignment of "flowMatrix".(ô§øï
+Hsquid:S1068"3Remove this unused "NUMBER_OF_LOOPS" private field.(Ä‰…ù
+Msquid:S1068"3Remove this unused "locationsNumber" private field.(äüÈ«úÿÿÿÿ
+Lsquid:S1068"2Remove this unused "distanceMatrix" private field.(ñ¾£Ñùÿÿÿÿ
+Hsquid:S1068".Remove this unused "flowMatrix" private field.(¨ÍÏ²üÿÿÿÿ
+Csquid:S1068".Remove this unused "bestResult" private field.(ƒÛÌ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÿ—äí
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(â˜ý¶
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¡…»
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ûÚé´
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ù“À
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(úŒÄêýÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ô˜ú«þÿÿÿÿ
+M
+squid:S106"9Replace this use of System.out or System.err by a logger.(Š›‹è
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ
+1squid:S1220""Move this file to a named package.
+6squid:S1170"!Make this final field static too.(Ä‰…ù
+psquid:S00116"ZRename this field "NUMBER_OF_LOOPS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä‰…ù
+Ssquid:S1155">Use isEmpty() to check whether the collection is empty or not.(èÚÏñ

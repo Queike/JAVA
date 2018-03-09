@@ -1,0 +1,20 @@
+
+6squid:S1643"Use a StringBuilder instead.(æùý©ùÿÿÿÿ
+asquid:S2095"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(—¡™¦
+fsquid:S2095"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(úÓû‡ùÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ž»™Û
+M
+squid:S106"9Replace this use of System.out or System.err by a logger.(’ýÙ†
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(úº‘žüÿÿÿÿ
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ
+{squid:S1488"aImmediately return this expression instead of assigning it to the temporary variable "webReader".(šÎ’Åúÿÿÿÿ
+}squid:S1488"cImmediately return this expression instead of assigning it to the temporary variable "firstNumber".(Ðýÿüÿÿÿÿ
+1squid:S1220""Move this file to a named package.
+;squid:S1170"!Make this final field static too.(¡öã§þÿÿÿÿ
+;squid:S1170"!Make this final field static too.(Ã’ýúÿÿÿÿ
+5squid:S1170"!Make this final field static too.(Áþðu
+{squid:S00116"`Rename this field "LINES_TO_FIRST_MATRIX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¡öã§þÿÿÿÿ
+|squid:S00116"aRename this field "LINES_BETWEEN_MATRIXES" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ã’ýúÿÿÿÿ
+squid:S00116"lRename this field "THE_BEGINNING_OF_THE_FIRST_MATRIX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Áþðu

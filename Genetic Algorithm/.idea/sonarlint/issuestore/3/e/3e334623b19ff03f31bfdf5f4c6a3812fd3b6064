@@ -1,0 +1,43 @@
+
+Msquid:UnusedPrivateMethod"*Remove this unused private "isEnd" method.(Û†ßá
+Nsquid:UnusedPrivateMethod"+Remove this unused private "isEnd2" method.(¸ðèŠ
+Xsquid:S3518">Make sure "sumCount" can't be zero before doing this division.(Â½Œ ûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(²÷ÿÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¬ç™žûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãÝõÄûÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Øêõú
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÇßùÐüÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ùƒÝ„
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÚüùC
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ÿˆô
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãÝõÄûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ß‡‘‚üÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Øêõú
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÓÀÎ‚øÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‚¯Áï
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÚüùC
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ÿˆô
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(¡¼¸àúÿÿÿÿ
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ÂôÇÙÿÿÿÿÿ
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ
+Vsquid:S1126"AReplace this if-then-else statement by a single return statement.(óÿÁÛ
+Vsquid:S1126"AReplace this if-then-else statement by a single return statement.(äÎòÙ
+1squid:S1220""Move this file to a named package.
+Jsquid:S1481"0Remove this unused "worstResult" local variable.(‰ãÓ©ùÿÿÿÿ
+Jsquid:S2209"5Change this instance-reference to a static reference.(ÓŒ‡Ì
+Isquid:S2209"5Change this instance-reference to a static reference.(Ð™¹3
+Jsquid:S2209"5Change this instance-reference to a static reference.(ÓŒ‡Ì
+Jsquid:S2209"5Change this instance-reference to a static reference.(ó†¶ç
+Jsquid:S1172"5Remove this unused method parameter "previousResult".(¸ðèŠ
+6squid:S1170"!Make this final field static too.(¶¤à
+;squid:S1170"!Make this final field static too.(ÜÌïöûÿÿÿÿ
+Wsquid:S00107"AConstructor has 8 parameters, which is greater than 7 authorized.( Öñ±
+Tsquid:S1854"?Remove this useless assignment to local variable "worstResult".(ó†¶ç
+wsquid:S00116"aRename this field "FINAL_DIFFERENCE_VALUE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶¤à
+vsquid:S00116"[Rename this field "FINAL_TEST_LOOPS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÌïöûÿÿÿÿ

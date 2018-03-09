@@ -20,10 +20,11 @@ public class GreedySearch {
     public void search(){
 
         NUMBER_OF_LOOPS = locationsNumber;
+        Solution bestSolution = new Solution();
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
             QualityCounter qualityCounter = new QualityCounter(locationsNumber, distanceMatrix, flowMatrix);
-            int [] vector;
+            Solution solution = new Solution();
 
             ArrayList<Integer> factories = new ArrayList<>();
             for(int actualFactoryNumber = 0; actualFactoryNumber < locationsNumber; actualFactoryNumber++)
@@ -31,17 +32,20 @@ public class GreedySearch {
                 factories.add(actualFactoryNumber);
             }
 
-
+            int[] vector = new int[locationsNumber];
 //            vector = getRandomlyFirstFactory();
-            vector = getFirstFactory(i);
-            factories.remove(vector[0]);
+            solution.setVector(getFirstFactory(i));
+            vector = solution.getVector();
+            factories.remove(solution.getVector()[0]);
+
             int cost;
 
             for(int actualLocationNumber = 1; actualLocationNumber < locationsNumber; actualLocationNumber++){
 
                 for(int actualFactoryNumber = 0; actualFactoryNumber < factories.size(); actualFactoryNumber++){
                     vector[actualLocationNumber] = factories.get(actualFactoryNumber);
-                    cost = qualityCounter.count(vector);
+                    solution.setVector(vector);
+                        cost = qualityCounter.count(solution);
 
                     if(actualFactoryNumber == 0 || cost < bestResult){
                         bestResult = cost;
@@ -53,15 +57,19 @@ public class GreedySearch {
                 factories.remove(numberOfBestFactory);
             }
 
-            int finalCost = qualityCounter.count(vector);
+            solution.setVector(vector);
+
+            int finalCost = qualityCounter.count(solution);
 
             if(finalCost < bestBestResult || bestBestResult == 0) {
                 bestBestResult = finalCost;
+                bestSolution.setVector(solution.getVector());
             }
 
 
         }
-        System.out.print("BEST RESULT OF GREEDY SEARCH FOR N = " + locationsNumber + " : " + bestBestResult + "\tvector -> \n");
+        System.out.print("BEST RESULT OF GREEDY SEARCH FOR N = " + locationsNumber + " : " + bestBestResult + "\tvector -> ");
+        printVector(bestSolution.getVector());
     }
 
 

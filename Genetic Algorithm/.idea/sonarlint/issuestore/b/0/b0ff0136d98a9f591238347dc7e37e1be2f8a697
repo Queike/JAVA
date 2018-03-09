@@ -1,0 +1,32 @@
+
+[squid:UnusedPrivateMethod"8Remove this unused private "runGaForAllTestSets" method.(òìç
+Rsquid:S1197"8Move the array designator from the variable to the type.(²Á€œüÿÿÿÿ
+[squid:S1075"ARefactor your code to get this URI from a customizable parameter.(€Ê…¤ıÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(İê¹ƒûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(³ô£¸úÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¢ñ˜äşÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(øü»«
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¾ñ—µÿÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÅÏÇşşÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¢ñ˜äşÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(øü»«
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(§”«»
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(êÇÆ¬
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(øü»«
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãİõÄûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(®Ÿ¿—şÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Şêšìüÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(€—Û¦
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(øü»«
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãİõÄûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ØÖ”ûÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(­¸ÔŞ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(”æ“ü
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+M
+squid:S106"9Replace this use of System.out or System.err by a logger.(Š›‹è
+R
+squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áşÿÿÿÿ
+1squid:S1220""Move this file to a named package.
+Isquid:S1481"/Remove this unused "population" local variable.(½íõøÿÿÿÿ
+Xsquid:S1854">Remove this useless assignment to local variable "population".(½íõøÿÿÿÿ

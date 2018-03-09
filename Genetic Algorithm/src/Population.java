@@ -2,13 +2,11 @@ import java.util.*;
 
 public class Population {
 
-    // change individuals to solutions !!!!!!!!!!
-
     private final int NUMBER_OF_CROSSING_TYPES = 3;
 
     private int populationSize;
     private static int locationsNumber;
-    public static int[][] actualGeneration;
+    public static ArrayList<Solution> actualGeneration;
     private QualityCounter qualityCounter;
     private int percentageProbabilityOfMutation;
     private int percentageProbabilityOfCrossing;
@@ -32,19 +30,18 @@ public class Population {
         return percentageProbabilityOfCrossing;
     }
 
-    private int[][] generateRandomlyFirstGeneration(){
-        int[][] generation = new int[populationSize][locationsNumber];
+    private ArrayList<Solution> generateRandomlyFirstGeneration(){
+        ArrayList<Solution> generation = new ArrayList<>(locationsNumber);
 
-        for(int actualIndividualNumber = 0; actualIndividualNumber < populationSize; actualIndividualNumber++){
-            for(int actualLocationNumber = 0; actualLocationNumber < locationsNumber; actualLocationNumber++){
-                generation[actualIndividualNumber] = generateVector();
-            }
+        for(int actualSolutionIndex = 0; actualSolutionIndex < populationSize; actualSolutionIndex++){
+            generation.add(generateVector());
         }
         return generation;
     }
 
-    private int[] generateVector(){
+    private Solution generateVector(){
 
+        Solution solution = new Solution();
         ArrayList<Integer> factories = new ArrayList<>();
         Random generator = new Random();
         int generatedNumber;
@@ -65,11 +62,12 @@ public class Population {
             position++;
         }
 
-        return vector;
+        solution.setVector(vector);
+        return solution;
     }
 
 
-    public static int[] swapMutation(int[] solution){
+    public static Solution swapMutation(Solution solution){
         Random generator = new Random();
 
         int indexOfFirstGenToSwap = generator.nextInt(locationsNumber);
@@ -78,23 +76,23 @@ public class Population {
             indexOfSecondGenToSwap = generator.nextInt(locationsNumber);
         }
 
-        int savedGen = solution[indexOfFirstGenToSwap];
-        solution[indexOfFirstGenToSwap] = solution[indexOfSecondGenToSwap];
-        solution[indexOfSecondGenToSwap] = savedGen;
+        int savedGen = solution.getVector()[indexOfFirstGenToSwap];
+        solution.modifyVector(indexOfFirstGenToSwap, solution.getVector()[indexOfSecondGenToSwap]);
+        solution.modifyVector(indexOfSecondGenToSwap, savedGen);
 
         return solution;
     }
 
-    public ArrayList<int[]> mutate(ArrayList<int[]> population){
-        for(int indexOfCurrentSolution = 0; indexOfCurrentSolution < populationSize; indexOfCurrentSolution++){
-            if(willBeMutated()){
-                population.set(indexOfCurrentSolution, swapMutation(population.get(indexOfCurrentSolution)));
-            }
-        }
-        int[][] src = convertArrayListOfArraysToTwoDimArray(population);
-        System.arraycopy( src, 0, actualGeneration, 0, src.length );
-        return population;
-    }
+//    public ArrayList<int[]> mutate(ArrayList<int[]> population){
+//        for(int indexOfCurrentSolution = 0; indexOfCurrentSolution < populationSize; indexOfCurrentSolution++){
+//            if(willBeMutated()){
+//                population.set(indexOfCurrentSolution, swapMutation(population.get(indexOfCurrentSolution)));
+//            }
+//        }
+//        int[][] src = convertArrayListOfArraysToTwoDimArray(population);
+//        System.arraycopy( src, 0, actualGeneration, 0, src.length );
+//        return population;
+//    }
 
 
 
@@ -126,67 +124,93 @@ public class Population {
     }
 
 
-    public int[] cross(int[] firstParent, int[] secondParent){
+    public Solution cross(Solution firstParent, Solution secondParent){
         int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
-        int[] child = new int[locationsNumber];
+        Solution child = new Solution();
+        int[] childVector = new int[locationsNumber];
         int pointOfCrossing;
 
         switch (crossingType){
             case 0:
-                System.arraycopy(firstParent, 0, child, 0, locationsNumber / 2);
+                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                    childVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
 
-                System.arraycopy(secondParent, locationsNumber / 2, child, locationsNumber / 2, locationsNumber - locationsNumber / 2);
+                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                    childVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
+
                 break;
 
             case 1:
-                System.arraycopy(secondParent, 0, child, 0, locationsNumber / 2);
+                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                    childVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
 
-                System.arraycopy(firstParent, locationsNumber / 2, child, locationsNumber / 2, locationsNumber - locationsNumber / 2);
+                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                    childVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
+
                 break;
 
             case 2:
                 pointOfCrossing = generator.nextInt(locationsNumber);
 
-                System.arraycopy(secondParent, 0, child, 0, pointOfCrossing);
+                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                    childVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
 
-                System.arraycopy(firstParent, pointOfCrossing, child, pointOfCrossing, locationsNumber - pointOfCrossing);
+                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                    childVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
                 break;
 
             case 3:
                 pointOfCrossing = generator.nextInt(locationsNumber);
 
-                System.arraycopy(firstParent, 0, child, 0, pointOfCrossing);
+                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                    childVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
 
-                System.arraycopy(secondParent, pointOfCrossing, child, pointOfCrossing, locationsNumber - pointOfCrossing);
+                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                    childVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
                 break;
         }
 
-        ArrayList<Integer> childAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( child ).boxed().toArray( Integer[]::new )));
-        ArrayList<Integer> repairedChild = repairChild(childAL);
-        child = convertArrayListToArray(repairedChild);
+        ArrayList<Integer> childAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( childVector ).boxed().toArray( Integer[]::new )));
+        ArrayList<Integer> repairedChildVector = repairChild(childAL);
+        child.setVector(convertArrayListToArray(repairedChildVector));
+
         return child;
     }
 
-    public int[][] makeNextGeneration(int[][] thisGeneration){
-        int[][] nextGeneration = new int[populationSize][locationsNumber];
-        int[] bestSolutionFromThisGeneraion = qualityCounter.findBestIndividual(thisGeneration);
+    public ArrayList<Solution> makeNextGeneration(ArrayList<Solution> thisGeneration){
+        ArrayList<Solution> nextGeneration = new ArrayList<>(locationsNumber);
+        Solution bestSolutionFromThisGeneration = new Solution();
+        bestSolutionFromThisGeneration.setVector(qualityCounter.findBestSolution(thisGeneration).getVector());
 
-        nextGeneration[0] = bestSolutionFromThisGeneraion;
+        nextGeneration.add(bestSolutionFromThisGeneration);
 
-        for(int actualSolution = 1; actualSolution < populationSize; actualSolution++){
+        for(int actualSolutionIndex = 1; actualSolutionIndex < populationSize; actualSolutionIndex++){
+
+
             if(willBeCrossed())
-                nextGeneration[actualSolution] = cross(thisGeneration[actualSolution], thisGeneration[generator.nextInt(populationSize)]);
+                nextGeneration.add(cross(thisGeneration.get(actualSolutionIndex), thisGeneration.get(generator.nextInt(populationSize))));
             else
-                nextGeneration[actualSolution] = thisGeneration[actualSolution];
+                nextGeneration.add(thisGeneration.get(actualSolutionIndex));
 
             if(willBeMutated())
-                nextGeneration[actualSolution] = swapMutation(nextGeneration[actualSolution]);
+                nextGeneration.set(actualSolutionIndex, swapMutation(nextGeneration.get(actualSolutionIndex)));
 
         }
 
         actualGeneration = nextGeneration;
         return nextGeneration;
     }
+
+
+    // change individuals to solutions !!!!!!!!!!
 
 //    public static int[] swapMutation(int[] parent){
 //        int[] parentClone = parent.clone();

@@ -1,0 +1,21 @@
+
+3squid:S3010"Remove this assignment of "N".(Ì±®Ù
+Esquid:S3010"+Remove this assignment of "distanceMatrix".(ƒĞüÿÿÿÿ
+;squid:S3010"'Remove this assignment of "flowMatrix".(·ŒŸV
+`squid:S3008"LRename this field "N" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿ–x
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ë¢äëùÿÿÿÿ
+_squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(£ƒÙ4
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éâÀüûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(óíªşÿÿÿÿ
+`squid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ùÜ—ñ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(™š§Şúÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Äœôúøÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(†ù¥©úÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(éâÀüûÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(óíªşÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(û¾¨»ùÿÿÿÿ
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(™š§Şúÿÿÿÿ
+Šsquid:S1319"uThe type of the "generation" object should be an interface such as "List" rather than the implementation "ArrayList".(Ìº®İ
+squid:S1319"uThe type of the "generation" object should be an interface such as "List" rather than the implementation "ArrayList".(¢Í×Ïÿÿÿÿÿ
+1squid:S1220""Move this file to a named package.
+gsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ùÚ…

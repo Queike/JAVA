@@ -10,7 +10,7 @@ public class Main {
     private static final int PERCENTAGE_PROBABILITY_OF_CROSSING = 70;
     private static final int PERCENTAGE_PROBABILITY_OF_MUTATION = 5;
     private static final int POPULATION_SIZE = 200;
-    private static final int GENERATION_LIMIT = 100;
+    private static final int GENERATION_LIMIT = 1000;
     private static final int THE_SAME_RESULT_MAX_COUNTER = 800;
 
     private static int locationsNumber;
@@ -26,6 +26,12 @@ public class Main {
 //        crossingTest();
 //        generatingNewGenerationTest();
 
+
+        System.out.println("_____GREEDY SEARCH_____");
+        runGreedySearchForAllTestSets();
+        System.out.println("\n\n_____RANDOM SEARCH_____");
+        runRandomSearchForAllTestSets();
+        System.out.println("\n\n_____GENETIC ALGORITHM BETA_____");
         runGaAlgorithm();
 
     }

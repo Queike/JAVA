@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class RandomSearch {
 
-    private final int NUMBER_OF_LOOPS = 100;
+    private final int NUMBER_OF_LOOPS = 100000;
 
     private static int locationsNumber;
     private static int[][] distanceMatrix;
@@ -22,11 +22,17 @@ public class RandomSearch {
         int [] vector;
         int [] bestVector = new int[locationsNumber];
         int quality;
+        Solution solution = new Solution();
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
             vector = generateVector(locationsNumber);
 
-            quality = qualityCounter.count(vector);
+            solution.setVector(vector);
+            if(solution.getCost() == -1)
+                quality = qualityCounter.count(solution);
+            else
+                quality = solution.getCost();
+
 
             if(quality < bestResult || bestResult == 0){
                 bestResult = quality;
