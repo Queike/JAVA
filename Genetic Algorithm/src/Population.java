@@ -229,7 +229,7 @@ public class Population {
             secondParent = playTournament(tournamentSize, thisGeneration);
 
             if(willBeCrossed()){
-                ArrayList<Solution> children = cross(firstParent, secondParent);
+                ArrayList<Solution> children = randomCross(firstParent, secondParent);
                 newGeneration.add(children.get(0));
                 newGeneration.add(children.get(1));
             } else {
@@ -304,7 +304,7 @@ public class Population {
             thisGeneration.remove(secondParent);
 
             if(willBeCrossed()){
-                ArrayList<Solution> children = cross(firstParent, secondParent);
+                ArrayList<Solution> children = cross(firstParent, secondParent, 2);
                 newGeneration.add(children.get(0));
                 newGeneration.add(children.get(1));
             } else {
@@ -367,35 +367,21 @@ public class Population {
     }
 
 
-    public ArrayList<Solution> cross(Solution firstParent, Solution secondParent){
-        int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
+    public ArrayList<Solution> cross(Solution firstParent, Solution secondParent, int crossingType) {
         Solution firstChild = new Solution();
         Solution secondChild = new Solution();
         int[] firstChildVector = new int[locationsNumber];
         int[] secondChildVector = new int[locationsNumber];
         int pointOfCrossing;
 
-        switch (crossingType){
-            case 0:
-                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
-                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
-                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
-                }
-
-                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
-                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
-                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
-                }
-
-                break;
-
+        switch (crossingType) {
             case 1:
-                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                for (int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++) {
                     firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
                     secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
                 }
 
-                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                for (int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++) {
                     firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
                     secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
                 }
@@ -405,31 +391,99 @@ public class Population {
             case 2:
                 pointOfCrossing = generator.nextInt(locationsNumber);
 
-                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                for (int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++) {
                     firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
                     secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
                 }
 
-                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                for (int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++) {
                     firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
                     secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
                 }
                 break;
 
-            case 3:
-                pointOfCrossing = generator.nextInt(locationsNumber);
-
-                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
-                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
-                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
-                }
-
-                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
-                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
-                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
-                }
-                break;
         }
+
+
+            ArrayList<Integer> firstChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream(firstChildVector).boxed().toArray(Integer[]::new)));
+            ArrayList<Integer> secondChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream(secondChildVector).boxed().toArray(Integer[]::new)));
+            ArrayList<Integer> repairedFirstChildVector = repairChild(firstChildAL);
+            ArrayList<Integer> repairedSecondChildVector = repairChild(secondChildAL);
+
+            firstChild.setVector(convertArrayListToArray(repairedFirstChildVector));
+            secondChild.setVector(convertArrayListToArray(repairedSecondChildVector));
+
+            ArrayList<Solution> children = new ArrayList<>();
+            children.add(firstChild);
+            children.add(secondChild);
+
+            return children;
+    }
+
+
+        public ArrayList<Solution> randomCross(Solution firstParent, Solution secondParent){
+            int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
+            Solution firstChild = new Solution();
+            Solution secondChild = new Solution();
+            int[] firstChildVector = new int[locationsNumber];
+            int[] secondChildVector = new int[locationsNumber];
+            int pointOfCrossing;
+
+            switch (crossingType){
+                case 0:
+                    for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                        firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    }
+
+                    for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                        firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    }
+
+                    break;
+
+                case 1:
+                    for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                        firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    }
+
+                    for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                        firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    }
+
+                    break;
+
+                case 2:
+                    pointOfCrossing = generator.nextInt(locationsNumber);
+
+                    for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                        firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    }
+
+                    for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                        firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    }
+                    break;
+
+                case 3:
+                    pointOfCrossing = generator.nextInt(locationsNumber);
+
+                    for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                        firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    }
+
+                    for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                        firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                        secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    }
+                    break;
+            }
 
         ArrayList<Integer> firstChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( firstChildVector ).boxed().toArray( Integer[]::new )));
         ArrayList<Integer> secondChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( secondChildVector ).boxed().toArray( Integer[]::new )));

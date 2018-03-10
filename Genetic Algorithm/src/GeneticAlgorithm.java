@@ -5,7 +5,7 @@ import static java.lang.Math.abs;
 public class GeneticAlgorithm {
 
     private final int FINAL_DIFFERENCE_VALUE = 0;
-    private final int FINAL_TEST_LOOPS = 10;
+    private final int FINAL_TEST_LOOPS = 1;
 
     private int populationSize;
     private int locationsNumber;
@@ -68,7 +68,8 @@ public class GeneticAlgorithm {
             csv.appendToFile(Integer.toString(bestResult));
             csv.nextLine();
 
-            while(!isEnd3(generationNumber, theSameResultCounter)){
+//            while(!isEnd(previousResult, bestResult)){
+           while(!isEnd3(generationNumber, theSameResultCounter)){
                 previousResult = bestResult;
 
                 // no special selection
