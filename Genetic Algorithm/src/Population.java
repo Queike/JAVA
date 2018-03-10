@@ -36,6 +36,7 @@ public class Population {
         for(int actualSolutionIndex = 0; actualSolutionIndex < populationSize; actualSolutionIndex++){
             generation.add(generateVector());
         }
+        actualGeneration = generation;
         return generation;
     }
 
@@ -221,15 +222,11 @@ public class Population {
         ArrayList<Solution> newGeneration = new ArrayList<>();
 
         newGeneration.add(bestSolutionFromCurrentGeneration);
-        thisGeneration.remove(bestSolutionFromCurrentGeneration);
 
         while(newGeneration.size() < populationSize){
 
             firstParent = playTournament(tournamentSize, thisGeneration);
             secondParent = playTournament(tournamentSize, thisGeneration);
-
-            printVector(firstParent.getVector());
-            printVector(secondParent.getVector());
 
             if(willBeCrossed()){
                 ArrayList<Solution> children = cross(firstParent, secondParent);
@@ -261,7 +258,7 @@ public class Population {
         Solution winner = new Solution();
 
         for(Solution solution : solutionsInTournament){
-            if(solution.getCost() < winner.getCost() || winner.getCost() == 0){
+            if(solution.getCost() < winner.getCost() || winner.getCost() == -1){
                 winner = solution;
             }
         }
@@ -277,8 +274,6 @@ public class Population {
             if(!solutionsInTournament.contains(thisGeneration.get(randomSolutionIndex)))
                 solutionsInTournament.add(thisGeneration.get(randomSolutionIndex));
         }
-        System.out.print("Solutions in tournament ");
-        printVector(solutionsInTournament.get(0).getVector());
 
         Solution winner = getWinnerFromTournament(solutionsInTournament);
 
@@ -792,6 +787,7 @@ public class Population {
 
 
     private void printVector(int[] vector){
+
         for (int aVector : vector) {
             System.out.print(aVector + " ");
         }
