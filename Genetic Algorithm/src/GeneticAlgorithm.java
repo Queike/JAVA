@@ -71,7 +71,15 @@ public class GeneticAlgorithm {
             while(!isEnd3(generationNumber, theSameResultCounter)){
                 previousResult = bestResult;
 
-                population.makeNextGeneration(population.actualGeneration);
+                // no special selection
+//                population.makeNextGeneration(population.actualGeneration);
+
+                // selection with roulette
+//                population.makeNextGenerationWithRoulette(population.actualGeneration);
+
+                // selection with tournament
+                population.makeNextGenerationWithTournament(population.actualGeneration, 10);
+
                 generationNumber++;
 
                 bestResult = qualityCounter.count(qualityCounter.findBestSolution(population.actualGeneration));

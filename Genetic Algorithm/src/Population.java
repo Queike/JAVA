@@ -124,7 +124,7 @@ public class Population {
     }
 
 
-    public Solution cross(Solution firstParent, Solution secondParent){
+    public Solution singleCross(Solution firstParent, Solution secondParent){
         int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
         Solution child = new Solution();
         int[] childVector = new int[locationsNumber];
@@ -196,7 +196,7 @@ public class Population {
 
 
             if(willBeCrossed())
-                nextGeneration.add(cross(thisGeneration.get(actualSolutionIndex), thisGeneration.get(generator.nextInt(populationSize))));
+                nextGeneration.add(singleCross(thisGeneration.get(actualSolutionIndex), thisGeneration.get(generator.nextInt(populationSize))));
             else
                 nextGeneration.add(thisGeneration.get(actualSolutionIndex));
 
@@ -208,6 +208,293 @@ public class Population {
         actualGeneration = nextGeneration;
         return nextGeneration;
     }
+
+    // TODO: switch best solution to next Generation
+
+    public ArrayList<Solution> makeNextGenerationWithTournament(ArrayList<Solution> thisGeneration, int tournamentSize){
+        Solution firstParent = new Solution();
+        Solution secondParent = new Solution();
+        Random generator = new Random();
+        ArrayList<Solution> solutionsInTournament = new ArrayList<>();
+
+        Solution bestSolutionFromCurrentGeneration = qualityCounter.findBestSolution(thisGeneration);
+        ArrayList<Solution> newGeneration = new ArrayList<>();
+
+        newGeneration.add(bestSolutionFromCurrentGeneration);
+        thisGeneration.remove(bestSolutionFromCurrentGeneration);
+
+        while(newGeneration.size() < populationSize){
+
+            firstParent = playTournament(tournamentSize, thisGeneration);
+            secondParent = playTournament(tournamentSize, thisGeneration);
+
+            printVector(firstParent.getVector());
+            printVector(secondParent.getVector());
+
+            if(willBeCrossed()){
+                ArrayList<Solution> children = cross(firstParent, secondParent);
+                newGeneration.add(children.get(0));
+                newGeneration.add(children.get(1));
+            } else {
+                newGeneration.add(firstParent);
+                newGeneration.add(secondParent);
+            }
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 2, swapMutation(newGeneration.get(newGeneration.size() - 2)));
+            }
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 1, swapMutation(newGeneration.get(newGeneration.size() - 1)));
+            }
+
+        }
+
+        actualGeneration = newGeneration;
+
+        return newGeneration;
+
+    }
+
+
+    public Solution getWinnerFromTournament(ArrayList<Solution> solutionsInTournament){
+        Solution winner = new Solution();
+
+        for(Solution solution : solutionsInTournament){
+            if(solution.getCost() < winner.getCost() || winner.getCost() == 0){
+                winner = solution;
+            }
+        }
+
+        return winner;
+    }
+
+    public Solution playTournament(int tournamentSize, ArrayList<Solution> thisGeneration){
+        ArrayList<Solution> solutionsInTournament = new ArrayList<>();
+
+        while (solutionsInTournament.size() < tournamentSize){
+            int randomSolutionIndex = generator.nextInt(populationSize);
+            if(!solutionsInTournament.contains(thisGeneration.get(randomSolutionIndex)))
+                solutionsInTournament.add(thisGeneration.get(randomSolutionIndex));
+        }
+        System.out.print("Solutions in tournament ");
+        printVector(solutionsInTournament.get(0).getVector());
+
+        Solution winner = getWinnerFromTournament(solutionsInTournament);
+
+        return winner;
+    }
+
+    public ArrayList<Solution> makeNextGenerationWithRoulette(ArrayList<Solution> thisGeneration){
+        int totalCost;
+        int randomPartialSum;
+        Solution firstParent = new Solution();
+        Solution secondParent = new Solution();
+        Random generator = new Random();
+        Solution bestSolutionFromCurrentGeneration = qualityCounter.findBestSolution(thisGeneration);
+        ArrayList<Solution> newGeneration = new ArrayList<>();
+
+        newGeneration.add(bestSolutionFromCurrentGeneration);
+        thisGeneration.remove(bestSolutionFromCurrentGeneration);
+
+        while (thisGeneration.size() > 1){
+            totalCost = getGenerationCost(thisGeneration);
+            randomPartialSum = generator.nextInt(totalCost);
+            firstParent = getSolutionWithPartialSum(randomPartialSum, thisGeneration);
+            thisGeneration.remove(firstParent);
+
+            totalCost = getGenerationCost(thisGeneration);
+            randomPartialSum = generator.nextInt(totalCost);
+            secondParent = getSolutionWithPartialSum(randomPartialSum, thisGeneration);
+            thisGeneration.remove(secondParent);
+
+            if(willBeCrossed()){
+                ArrayList<Solution> children = cross(firstParent, secondParent);
+                newGeneration.add(children.get(0));
+                newGeneration.add(children.get(1));
+            } else {
+                newGeneration.add(firstParent);
+                newGeneration.add(secondParent);
+            }
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 2, swapMutation(newGeneration.get(newGeneration.size() - 2)));
+            }
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 1, swapMutation(newGeneration.get(newGeneration.size() - 1)));
+            }
+        }
+
+        while (thisGeneration.size() > 0){
+            firstParent = thisGeneration.get(0);
+            thisGeneration.remove(firstParent);
+            newGeneration.add(firstParent);
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 1, swapMutation(newGeneration.get(newGeneration.size() - 1)));
+            }
+        }
+
+        actualGeneration = newGeneration;
+        return newGeneration;
+
+    }
+
+    public int getGenerationCost(ArrayList<Solution> generation){
+        int totalCost = 0;
+
+        for(Solution solution : generation){
+            if(solution.getCost() != -1)
+                totalCost += solution.getCost();
+            else
+                totalCost += qualityCounter.count(solution);
+        }
+
+        return totalCost;
+    }
+
+    public Solution getSolutionWithPartialSum(int presetPartialSum, ArrayList<Solution> generation){
+        int partialSum = 0;
+        Solution resultSolution = new Solution();
+
+        for(Solution solution : generation){
+            if(solution.getCost() != -1)
+                partialSum += solution.getCost();
+            else
+                partialSum += qualityCounter.count(solution);
+
+            if(presetPartialSum < partialSum)
+                resultSolution = solution;
+        }
+
+        return resultSolution;
+    }
+
+
+    public ArrayList<Solution> cross(Solution firstParent, Solution secondParent){
+        int crossingType = generator.nextInt(NUMBER_OF_CROSSING_TYPES);
+        Solution firstChild = new Solution();
+        Solution secondChild = new Solution();
+        int[] firstChildVector = new int[locationsNumber];
+        int[] secondChildVector = new int[locationsNumber];
+        int pointOfCrossing;
+
+        switch (crossingType){
+            case 0:
+                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
+
+                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
+
+                break;
+
+            case 1:
+                for(int actualIndex = 0; actualIndex < locationsNumber / 2; actualIndex++){
+                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
+
+                for(int actualIndex = locationsNumber / 2; actualIndex < locationsNumber; actualIndex++){
+                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
+
+                break;
+
+            case 2:
+                pointOfCrossing = generator.nextInt(locationsNumber);
+
+                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
+
+                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
+                break;
+
+            case 3:
+                pointOfCrossing = generator.nextInt(locationsNumber);
+
+                for(int actualIndex = 0; actualIndex < pointOfCrossing; actualIndex++){
+                    firstChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                }
+
+                for(int actualIndex = pointOfCrossing; actualIndex < locationsNumber; actualIndex++){
+                    firstChildVector[actualIndex] = firstParent.getVector()[actualIndex];
+                    secondChildVector[actualIndex] = secondParent.getVector()[actualIndex];
+                }
+                break;
+        }
+
+        ArrayList<Integer> firstChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( firstChildVector ).boxed().toArray( Integer[]::new )));
+        ArrayList<Integer> secondChildAL = new ArrayList<Integer>(Arrays.asList(Arrays.stream( secondChildVector ).boxed().toArray( Integer[]::new )));
+        ArrayList<Integer> repairedFirstChildVector = repairChild(firstChildAL);
+        ArrayList<Integer> repairedSecondChildVector = repairChild(secondChildAL);
+
+        firstChild.setVector(convertArrayListToArray(repairedFirstChildVector));
+        secondChild.setVector(convertArrayListToArray(repairedSecondChildVector));
+
+        ArrayList<Solution> children = new ArrayList<>();
+        children.add(firstChild);
+        children.add(secondChild);
+
+        return children;
+    }
+
+
+//    public int[][] selectIndividualsWithRoulette(){
+//        int totalSum = 0;
+//        int[][] chosenIndividuals = new int[PERCENTAGE_OF_INDIVIDUALS_TO_CROSS * populationSize / 100][locationsNumber];
+//        ArrayList<Integer> indexesOfChosenIndividuals = new ArrayList<>();
+//
+//        System.out.println("Pierwszy znacznik w ruletce");
+//
+//        for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
+//            totalSum += qualityCounter.count(actualGeneration[actualIndividual]);
+//            System.out.println("Drugi znacznik w ruletce");
+//        }
+//
+//        Random generator = new Random();
+//        System.out.println("Trzeci znacznik w ruletce");
+//
+//        for(int actualChooseOfIndividual = 0; actualChooseOfIndividual < chosenIndividuals.length; actualChooseOfIndividual++){ // ---------------------------------------
+//            int randomPartialSum = generator.nextInt(totalSum);
+//            int partialSum = 0;
+//            System.out.println("Czwarty znacznik w ruletce");
+//
+//            for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
+//                System.out.println("Piaty znacznik w ruletce");
+//                partialSum += qualityCounter.count(actualGeneration[actualIndividual]);
+//                System.out.println("PARTIAL SUM = " + partialSum);
+//                System.out.println("RANDOM PARTIAL SUM = " + randomPartialSum);
+//                if(partialSum > randomPartialSum){
+//                    System.out.println("indexesOfChosenIndividuals : " + indexesOfChosenIndividuals);
+//                    System.out.println("actualIndividual : " + actualIndividual);
+//                    if(!indexesOfChosenIndividuals.contains(actualIndividual)){
+//                        System.out.println("Szosty znacznik w ruletce");
+//                        chosenIndividuals[actualChooseOfIndividual] = actualGeneration[actualIndividual];
+//                        indexesOfChosenIndividuals.add(actualIndividual);
+//                        //actualIndividual++;                                                                                   // --------------------------------------------
+//                    }
+//
+//                }
+//
+//            }
+//        }
+//        System.out.println("Wypisuje wybrane osobniki z metody ruletki ");
+//        printPopulation(chosenIndividuals);
+//        return chosenIndividuals;
+//    }
 
 
     // change individuals to solutions !!!!!!!!!!
@@ -352,49 +639,6 @@ public class Population {
 //    }
 
 
-//    public int[][] selectIndividualsWithRoulette(){
-//        int totalSum = 0;
-//        int[][] chosenIndividuals = new int[PERCENTAGE_OF_INDIVIDUALS_TO_CROSS * populationSize / 100][locationsNumber];
-//        ArrayList<Integer> indexesOfChosenIndividuals = new ArrayList<>();
-//
-//        System.out.println("Pierwszy znacznik w ruletce");
-//
-//        for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
-//            totalSum += qualityCounter.count(actualGeneration[actualIndividual]);
-//            System.out.println("Drugi znacznik w ruletce");
-//        }
-//
-//        Random generator = new Random();
-//        System.out.println("Trzeci znacznik w ruletce");
-//
-//        for(int actualChooseOfIndividual = 0; actualChooseOfIndividual < chosenIndividuals.length; actualChooseOfIndividual++){ // ---------------------------------------
-//            int randomPartialSum = generator.nextInt(totalSum);
-//            int partialSum = 0;
-//            System.out.println("Czwarty znacznik w ruletce");
-//
-//            for(int actualIndividual = 0; actualIndividual < populationSize; actualIndividual++){
-//                System.out.println("Piaty znacznik w ruletce");
-//                partialSum += qualityCounter.count(actualGeneration[actualIndividual]);
-//                System.out.println("PARTIAL SUM = " + partialSum);
-//                System.out.println("RANDOM PARTIAL SUM = " + randomPartialSum);
-//                if(partialSum > randomPartialSum){
-//                    System.out.println("indexesOfChosenIndividuals : " + indexesOfChosenIndividuals);
-//                    System.out.println("actualIndividual : " + actualIndividual);
-//                    if(!indexesOfChosenIndividuals.contains(actualIndividual)){
-//                        System.out.println("Szosty znacznik w ruletce");
-//                        chosenIndividuals[actualChooseOfIndividual] = actualGeneration[actualIndividual];
-//                        indexesOfChosenIndividuals.add(actualIndividual);
-//                        //actualIndividual++;                                                                                   // --------------------------------------------
-//                    }
-//
-//                }
-//
-//            }
-//        }
-//        System.out.println("Wypisuje wybrane osobniki z metody ruletki ");
-//        printPopulation(chosenIndividuals);
-//        return chosenIndividuals;
-//    }
 
 //    public ArrayList<int[]> createNewGenerationWithBestAndCross(){
 //
