@@ -8,7 +8,7 @@ public class Main {
     private static final String [] NAMES_OF_DATA_SETS = {"had12", "had14", "had16", "had18", "had20"};
 
     private static final int PERCENTAGE_PROBABILITY_OF_CROSSING = 70;
-    private static final int PERCENTAGE_PROBABILITY_OF_MUTATION = 5;
+    private static final int PERCENTAGE_PROBABILITY_OF_MUTATION = 25;
     private static final int POPULATION_SIZE = 200;
     private static final int GENERATION_LIMIT = 1000;
     private static final int THE_SAME_RESULT_MAX_COUNTER = 800;

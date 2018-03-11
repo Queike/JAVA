@@ -22,11 +22,12 @@ public class RandomSearch {
         int [] vector;
         int [] bestVector = new int[locationsNumber];
         int quality;
-        Solution solution = new Solution();
+
 
         for(int i = 0; i < NUMBER_OF_LOOPS; i++){
             vector = generateVector(locationsNumber);
 
+            Solution solution = new Solution();
             solution.setVector(vector);
             if(solution.getCost() == -1)
                 quality = qualityCounter.count(solution);

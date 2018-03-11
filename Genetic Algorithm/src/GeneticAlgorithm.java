@@ -68,8 +68,8 @@ public class GeneticAlgorithm {
             csv.appendToFile(Integer.toString(bestResult));
             csv.nextLine();
 
-//            while(!isEnd(previousResult, bestResult)){
-           while(!isEnd3(generationNumber, theSameResultCounter)){
+            while(!isEnd3(generationNumber, theSameResultCounter)){
+//           while(!isEnd3(generationNumber, theSameResultCounter)){
                 previousResult = bestResult;
 
                 // no special selection

@@ -223,7 +223,7 @@ public class Population {
 
         newGeneration.add(bestSolutionFromCurrentGeneration);
 
-        while(newGeneration.size() < populationSize){
+        while(newGeneration.size() < populationSize - 1){
 
             firstParent = playTournament(tournamentSize, thisGeneration);
             secondParent = playTournament(tournamentSize, thisGeneration);
@@ -245,6 +245,15 @@ public class Population {
                 newGeneration.set(newGeneration.size() - 1, swapMutation(newGeneration.get(newGeneration.size() - 1)));
             }
 
+        }
+
+        if(newGeneration.size() < populationSize){
+            firstParent = playTournament(tournamentSize, thisGeneration);
+            newGeneration.add(firstParent);
+
+            if(willBeMutated()){
+                newGeneration.set(newGeneration.size() - 1, swapMutation(newGeneration.get(newGeneration.size() - 1)));
+            }
         }
 
         actualGeneration = newGeneration;
