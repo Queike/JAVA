@@ -76,10 +76,10 @@ public class GeneticAlgorithm {
 //                population.makeNextGeneration(population.actualGeneration);
 
                 // selection with roulette
-//                population.makeNextGenerationWithRoulette(population.actualGeneration);
+                population.makeNextGenerationWithRoulette(population.actualGeneration);
 
                 // selection with tournament
-                population.makeNextGenerationWithTournament(population.actualGeneration, 10);
+//                population.makeNextGenerationWithTournament(population.actualGeneration, 10);
 
                 generationNumber++;
 

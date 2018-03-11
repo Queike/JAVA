@@ -290,7 +290,7 @@ public class Population {
     }
 
     public ArrayList<Solution> makeNextGenerationWithRoulette(ArrayList<Solution> thisGeneration){
-        int totalCost;
+        int sum;
         int randomPartialSum;
         Solution firstParent = new Solution();
         Solution secondParent = new Solution();
@@ -299,18 +299,18 @@ public class Population {
         ArrayList<Solution> newGeneration = new ArrayList<>();
 
         newGeneration.add(bestSolutionFromCurrentGeneration);
-        thisGeneration.remove(bestSolutionFromCurrentGeneration);
+ //       thisGeneration.remove(bestSolutionFromCurrentGeneration);
 
-        while (thisGeneration.size() > 1){
-            totalCost = getGenerationCost(thisGeneration);
-            randomPartialSum = generator.nextInt(totalCost);
+        while (newGeneration.size() < populationSize - 1){
+            sum = getSumOfDifferencesBetwenWorstAndActualSolution(thisGeneration);
+            randomPartialSum = generator.nextInt(sum);
             firstParent = getSolutionWithPartialSum(randomPartialSum, thisGeneration);
-            thisGeneration.remove(firstParent);
+//            thisGeneration.remove(firstParent);
 
-            totalCost = getGenerationCost(thisGeneration);
-            randomPartialSum = generator.nextInt(totalCost);
+            sum = getSumOfDifferencesBetwenWorstAndActualSolution(thisGeneration);
+            randomPartialSum = generator.nextInt(sum);
             secondParent = getSolutionWithPartialSum(randomPartialSum, thisGeneration);
-            thisGeneration.remove(secondParent);
+//            thisGeneration.remove(secondParent);
 
             if(willBeCrossed()){
                 ArrayList<Solution> children = cross(firstParent, secondParent, 2);
@@ -330,9 +330,9 @@ public class Population {
             }
         }
 
-        while (thisGeneration.size() > 0){
+        while (newGeneration.size() < populationSize){
             firstParent = thisGeneration.get(0);
-            thisGeneration.remove(firstParent);
+//            thisGeneration.remove(firstParent);
             newGeneration.add(firstParent);
 
             if(willBeMutated()){
@@ -358,15 +358,30 @@ public class Population {
         return totalCost;
     }
 
-    public Solution getSolutionWithPartialSum(int presetPartialSum, ArrayList<Solution> generation){
-        int partialSum = 0;
-        Solution resultSolution = new Solution();
+    public int getSumOfDifferencesBetwenWorstAndActualSolution(ArrayList<Solution> generation){
+        int sum = 0;
+        int theWorstSolutionCost = qualityCounter.findWorstSolution(generation).getCost();
 
         for(Solution solution : generation){
             if(solution.getCost() != -1)
-                partialSum += solution.getCost();
+                sum += theWorstSolutionCost - solution.getCost();
             else
-                partialSum += qualityCounter.count(solution);
+                sum += theWorstSolutionCost - qualityCounter.count(solution);
+        }
+
+        return sum;
+    }
+
+    public Solution getSolutionWithPartialSum(int presetPartialSum, ArrayList<Solution> generation){
+        int partialSum = 0;
+        Solution resultSolution = new Solution();
+        int theWorstSolutionCost = qualityCounter.findWorstSolution(generation).getCost();
+
+        for(Solution solution : generation){
+            if(solution.getCost() != -1)
+                partialSum += theWorstSolutionCost - solution.getCost();
+            else
+                partialSum += theWorstSolutionCost - qualityCounter.count(solution);
 
             if(presetPartialSum < partialSum)
                 resultSolution = solution;
@@ -374,6 +389,24 @@ public class Population {
 
         return resultSolution;
     }
+
+
+//    public Solution getSolutionWithPartialSum(int presetPartialSum, ArrayList<Solution> generation){
+//        int partialSum = 0;
+//        Solution resultSolution = new Solution();
+//
+//        for(Solution solution : generation){
+//            if(solution.getCost() != -1)
+//                partialSum += solution.getCost();
+//            else
+//                partialSum += qualityCounter.count(solution);
+//
+//            if(presetPartialSum < partialSum)
+//                resultSolution = solution;
+//        }
+//
+//        return resultSolution;
+//    }
 
 
     public ArrayList<Solution> cross(Solution firstParent, Solution secondParent, int crossingType) {
