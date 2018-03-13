@@ -6,6 +6,14 @@ public class Solution {
     private int[] solutionVector;
     private int cost;
 
+    protected Solution clone() {
+        Solution solution = new Solution();
+        solution.setCost(this.getCost());
+        solution.setVector(this.getVector().clone());
+
+        return solution;
+    }
+
     public Solution(){
         cost = -1;
     }

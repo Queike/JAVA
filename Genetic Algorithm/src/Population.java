@@ -191,7 +191,7 @@ public class Population {
         Solution bestSolutionFromThisGeneration = new Solution();
         bestSolutionFromThisGeneration.setVector(qualityCounter.findBestSolution(thisGeneration).getVector());
 
-        nextGeneration.add(bestSolutionFromThisGeneration);
+        nextGeneration.add(bestSolutionFromThisGeneration.clone());
 
         for(int actualSolutionIndex = 1; actualSolutionIndex < populationSize; actualSolutionIndex++){
 
@@ -212,7 +212,7 @@ public class Population {
 
     // TODO: switch best solution to next Generation
 
-    public ArrayList<Solution> makeNextGenerationWithTournament(ArrayList<Solution> thisGeneration, int tournamentSize){
+    public ArrayList<Solution> makeNextGenerationWithTournament(ArrayList<Solution> thisGeneration, int tournamentSize) {
         Solution firstParent = new Solution();
         Solution secondParent = new Solution();
         Random generator = new Random();
@@ -221,7 +221,7 @@ public class Population {
         Solution bestSolutionFromCurrentGeneration = qualityCounter.findBestSolution(thisGeneration);
         ArrayList<Solution> newGeneration = new ArrayList<>();
 
-        newGeneration.add(bestSolutionFromCurrentGeneration);
+        newGeneration.add(bestSolutionFromCurrentGeneration.clone());
 
         while(newGeneration.size() < populationSize - 1){
 
@@ -229,7 +229,7 @@ public class Population {
             secondParent = playTournament(tournamentSize, thisGeneration);
 
             if(willBeCrossed()){
-                ArrayList<Solution> children = randomCross(firstParent, secondParent);
+                ArrayList<Solution> children = cross(firstParent, secondParent, 2);
                 newGeneration.add(children.get(0));
                 newGeneration.add(children.get(1));
             } else {
@@ -271,9 +271,9 @@ public class Population {
                 winner = solution;
             }
         }
-
         return winner;
     }
+
 
     public Solution playTournament(int tournamentSize, ArrayList<Solution> thisGeneration){
         ArrayList<Solution> solutionsInTournament = new ArrayList<>();
@@ -298,7 +298,7 @@ public class Population {
         Solution bestSolutionFromCurrentGeneration = qualityCounter.findBestSolution(thisGeneration);
         ArrayList<Solution> newGeneration = new ArrayList<>();
 
-        newGeneration.add(bestSolutionFromCurrentGeneration);
+        newGeneration.add(bestSolutionFromCurrentGeneration.clone());
  //       thisGeneration.remove(bestSolutionFromCurrentGeneration);
 
         while (newGeneration.size() < populationSize - 1){

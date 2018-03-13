@@ -6,6 +6,7 @@ public class GeneticAlgorithm {
 
     private final int FINAL_DIFFERENCE_VALUE = 0;
     private final int FINAL_TEST_LOOPS = 1;
+    private final int MAXIMUM_DURATION = 10000;
 
     private int populationSize;
     private int locationsNumber;
@@ -16,6 +17,7 @@ public class GeneticAlgorithm {
     private int theSameResultMaxCounter;
     private String dataSetName;
     long searchingTime;
+    long runMethodStartTime;
 
     GeneticAlgorithm(int populationSize, int locationsNumber, QualityCounter qualityCounter, int percentageProbabilityOfMutation, int percentageProbabilityOfCrossing, int generationLimit, int theSameResultMaxCounter, String dataSetName){
         this.populationSize = populationSize;
@@ -46,15 +48,18 @@ public class GeneticAlgorithm {
 
     public void run() throws FileNotFoundException {
 
+        runMethodStartTime = System.currentTimeMillis();
+
         int totalCostSum = 0;
         int sumCount = 0;
+        int generationNumber = 1;
 
         for(int actualTestLoop = 0; actualTestLoop < FINAL_TEST_LOOPS; actualTestLoop++){
 
             int bestResult;
             int worstResult;
             int previousResult = 0;
-            int generationNumber = 1;
+
             int theSameResultCounter = 0;
             long startTime = System.currentTimeMillis();
 
@@ -68,7 +73,8 @@ public class GeneticAlgorithm {
             csv.appendToFile(Integer.toString(bestResult));
             csv.nextLine();
 
-            while(!isEnd3(generationNumber, theSameResultCounter)){
+            while(!isEnd4(MAXIMUM_DURATION)){
+//            while(!isEnd3(generationNumber, theSameResultCounter)){
 //           while(!isEnd3(generationNumber, theSameResultCounter)){
                 previousResult = bestResult;
 
@@ -76,10 +82,11 @@ public class GeneticAlgorithm {
 //                population.makeNextGeneration(population.actualGeneration);
 
                 // selection with roulette
-                population.makeNextGenerationWithRoulette(population.actualGeneration);
+//                population.makeNextGenerationWithRoulette(population.actualGeneration);
 
                 // selection with tournament
-//                population.makeNextGenerationWithTournament(population.actualGeneration, 10);
+                population.makeNextGenerationWithTournament(population.actualGeneration, 10);
+
 
                 generationNumber++;
 
@@ -97,8 +104,6 @@ public class GeneticAlgorithm {
                 csv.nextColumn();
                 csv.appendToFile(Integer.toString(bestResult));
                 csv.nextLine();
-//                System.out.println("BEST RESULT ---> " + bestResult);
-//                System.out.println("WORST RESULT --> " + worstResult);
             }
 
             long finishTime = System.currentTimeMillis();
@@ -129,6 +134,10 @@ public class GeneticAlgorithm {
         if(actualResult == 1652)
             return true;
         else return false;
+    }
+
+    private boolean isEnd4(int maximumDuration){
+        return System.currentTimeMillis() - runMethodStartTime > maximumDuration;
     }
 
     public void printVector(int [] vector){
