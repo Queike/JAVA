@@ -104,8 +104,8 @@ public class Game {
             columnIndex--;
         }
 
-        rowIndex = move.getRow();
-        columnIndex = move.getColumn();
+        rowIndex = move.getRow() + 1;
+        columnIndex = move.getColumn() + 1;
 
         while(columnIndex < gameBoardSize && rowIndex < gameBoardSize){
             if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
@@ -116,10 +116,10 @@ public class Game {
             columnIndex++;
         }
 
-        if(pointsCounter == 2)
+        if(pointsCounter == 1)
             pointsCounter--;
 
-        return --pointsCounter;
+        return pointsCounter;
     }
 
     private int countPoints(SingleMove move){
