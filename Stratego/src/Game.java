@@ -89,6 +89,39 @@ public class Game {
         return true;
     }
 
+    private int checkDiagonal(SingleMove move){
+        int pointsCounter = 0;
+
+        int rowIndex = move.getRow();
+        int columnIndex = move.getColumn();
+
+        while(columnIndex >= 0 && rowIndex >= 0){
+            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                return 0;
+            else pointsCounter++;
+
+            rowIndex--;
+            columnIndex--;
+        }
+
+        rowIndex = move.getRow();
+        columnIndex = move.getColumn();
+
+        while(columnIndex < gameBoardSize && rowIndex < gameBoardSize){
+            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                return 0;
+            else pointsCounter++;
+
+            rowIndex++;
+            columnIndex++;
+        }
+
+        if(pointsCounter == 2)
+            pointsCounter--;
+
+        return --pointsCounter;
+    }
+
     private int countPoints(SingleMove move){
         int earnedPoints = 0;
 
@@ -123,27 +156,5 @@ public class Game {
         else player2Points += points;
     }
 
-    private int checkDiagonal(SingleMove move){
-        int pointsCounter = 0;
 
-        for(int rowIndex = move.getRow(); rowIndex >= 0;){
-            for(int columnIndex = move.getColumn(); columnIndex >= 0 && rowIndex >= 0; columnIndex--){
-                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
-                    return 0;
-                else pointsCounter++;
-
-                rowIndex--;
-            }
-        }
-
-        for(int rowIndex = move.getRow(); rowIndex < gameBoardSize;){
-            for(int columnIndex = move.getColumn(); columnIndex < gameBoardSize && rowIndex < gameBoardSize; columnIndex++){
-                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
-                    return 0;
-                else pointsCounter++;
-                rowIndex++;
-            }
-        }
-        return --pointsCounter;
-    }
 }
