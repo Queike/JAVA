@@ -107,6 +107,15 @@ public class Gui {
         return singleMove;
     }
 
+    public void showPlayerScoredMessage(String playerName, int points){
+        System.out.println(playerName + " scored " + points + " points!");
+    }
+
+    public void showPlayersPoints(String player1Name, int player1Points, String player2Name, int player2Points){
+        System.out.println(player1Name + " points: " + player1Points);
+        System.out.println(player2Name + " points: " + player2Points);
+    }
+
     public void showPlaceTakenMessage(){
         System.out.println(TAKEN_PLACE_MESSAGE);
     }
