@@ -70,7 +70,7 @@ public class Game {
     }
 
     private boolean checkMoveForPoints(SingleMove move){
-        return checkRow(move) || checkColumn(move) || checkDiagonal(move);
+        return checkRow(move) || checkColumn(move) || checkDiagonal(move) != 0;
     }
 
     private boolean checkRow(SingleMove move){
@@ -98,8 +98,9 @@ public class Game {
         if(checkColumn(move))
             earnedPoints += countPointsFromColumn();
 
-        if(checkDiagonal(move))
-            earnedPoints += countPointsFromDiagonal();
+        int diagonalPoints = checkDiagonal(move);
+        if(diagonalPoints != 0)
+            earnedPoints += countPointsFromDiagonal(diagonalPoints);
 
         return earnedPoints;
     }
@@ -112,9 +113,8 @@ public class Game {
         return gameBoardSize;
     }
 
-    private int countPointsFromDiagonal(){
-//        TODO
-        return 500;
+    private int countPointsFromDiagonal(int diagonalPoints){
+        return diagonalPoints;
     }
 
     private void addPointsToPlayerAccount(int points){
@@ -123,7 +123,27 @@ public class Game {
         else player2Points += points;
     }
 
-    private boolean checkDiagonal(SingleMove move){
-        return false;
+    private int checkDiagonal(SingleMove move){
+        int pointsCounter = 0;
+
+        for(int rowIndex = move.getRow(); rowIndex >= 0;){
+            for(int columnIndex = move.getColumn(); columnIndex >= 0 && rowIndex >= 0; columnIndex--){
+                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                    return 0;
+                else pointsCounter++;
+
+                rowIndex--;
+            }
+        }
+
+        for(int rowIndex = move.getRow(); rowIndex < gameBoardSize;){
+            for(int columnIndex = move.getColumn(); columnIndex < gameBoardSize && rowIndex < gameBoardSize; columnIndex++){
+                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                    return 0;
+                else pointsCounter++;
+                rowIndex++;
+            }
+        }
+        return --pointsCounter;
     }
 }
