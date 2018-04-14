@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 public class Game {
 
     private final char EMPTY_DESIGNATION = '_';
@@ -30,16 +33,62 @@ public class Game {
         }
     }
 
-    public void play(){
+    public void playPvP(){
+
         while(freeSpaces > 0){
-            makePlayerMove();
+            gui.printGameBoardWithIndexes(gameBoard);
+            SingleMove move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
+//            makePlayerMove();
+            makeMove(move);
         }
     }
 
-    private void makePlayerMove(){
-        gui.printGameBoardWithIndexes(gameBoard);
+    public void playAvP() throws InterruptedException {
+        AI ai = new AI();
 
-        SingleMove move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
+        while (freeSpaces > 0){
+            gui.printGameBoardWithIndexes(gameBoard);
+            SingleMove playerMove = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
+            makeMove(playerMove);
+            gui.printGameBoardWithIndexes(gameBoard);
+
+            System.out.print("AI moves: ");
+            TimeUnit.SECONDS.sleep(2);
+            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());
+            System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
+            makeMove(aiMove);
+        }
+    }
+
+    public void playAvA(){
+
+    }
+
+//    private void makePlayerMove(){
+//        gui.printGameBoardWithIndexes(gameBoard);
+//
+//        SingleMove move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
+//        if(gameBoard[move.getRow()][move.getColumn()] == EMPTY_DESIGNATION){
+//            gameBoard[move.getRow()][move.getColumn()] = currentPlayer;
+//
+//            if(checkMoveForPoints(move)){
+//                int earnedPoints = countPoints(move);
+//                gui.showPlayerScoredMessage(String.valueOf(currentPlayer), earnedPoints);
+//                addPointsToPlayerAccount(earnedPoints);
+//                gui.showPlayersPoints(String.valueOf(PLAYER1_DESIGNATION), player1Points, String.valueOf(PLAYER2_DESIGNATION), player2Points);
+//            }
+//
+//
+//            freeSpaces--;
+//            switchCurrentPlayer();
+//        } else {
+//            gui.showPlaceTakenMessage();
+//            makePlayerMove();
+//        }
+//    }
+
+    private void makeMove(SingleMove move){
+
         if(gameBoard[move.getRow()][move.getColumn()] == EMPTY_DESIGNATION){
             gameBoard[move.getRow()][move.getColumn()] = currentPlayer;
 
@@ -55,7 +104,8 @@ public class Game {
             switchCurrentPlayer();
         } else {
             gui.showPlaceTakenMessage();
-            makePlayerMove();
+            move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
+            makeMove(move);
         }
     }
 
@@ -70,7 +120,7 @@ public class Game {
     }
 
     private boolean checkMoveForPoints(SingleMove move){
-        return checkRow(move) || checkColumn(move) || checkDiagonal(move) != 0;
+        return checkRow(move) || checkColumn(move) || checkDiagonals(move) != 0;
     }
 
     private boolean checkRow(SingleMove move){
@@ -89,7 +139,7 @@ public class Game {
         return true;
     }
 
-    private int checkDiagonal(SingleMove move){
+    private int checkFirstDiagonal(SingleMove move){
         int pointsCounter = 0;
 
         int rowIndex = move.getRow();
@@ -116,10 +166,48 @@ public class Game {
             columnIndex++;
         }
 
+
+
         if(pointsCounter == 1)
             pointsCounter--;
 
         return pointsCounter;
+    }
+
+    private int checkSecondDiagonal(SingleMove move){
+        int pointsCounter = 0;
+        int rowIndex = move.getRow();
+        int columnIndex = move.getColumn();
+
+        while(columnIndex >= 0 && rowIndex < gameBoardSize){
+            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                return 0;
+            else pointsCounter++;
+
+            rowIndex++;
+            columnIndex--;
+        }
+
+        rowIndex = move.getRow() - 1;
+        columnIndex = move.getColumn() + 1;
+
+        while(columnIndex < gameBoardSize && rowIndex >= 0){
+            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+                return 0;
+            else pointsCounter++;
+
+            rowIndex--;
+            columnIndex++;
+        }
+
+        if(pointsCounter == 1)
+            pointsCounter--;
+
+        return pointsCounter;
+    }
+
+    private int checkDiagonals(SingleMove move){
+        return checkFirstDiagonal(move) + checkSecondDiagonal(move);
     }
 
     private int countPoints(SingleMove move){
@@ -131,11 +219,26 @@ public class Game {
         if(checkColumn(move))
             earnedPoints += countPointsFromColumn();
 
-        int diagonalPoints = checkDiagonal(move);
+        int diagonalPoints = checkDiagonals(move);
         if(diagonalPoints != 0)
             earnedPoints += countPointsFromDiagonal(diagonalPoints);
 
         return earnedPoints;
+    }
+
+    private ArrayList<SingleMove> getAvailableMoves(){
+        ArrayList<SingleMove> availableMoves = new ArrayList<>();
+
+        for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
+            for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
+                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION){
+                    SingleMove singleMove = new SingleMove(rowIndex, columnIndex);
+                    availableMoves.add(singleMove);
+                }
+            }
+        }
+
+        return availableMoves;
     }
 
     private int countPointsFromRow(){

@@ -13,8 +13,9 @@ public class Gui {
 
     private int gameBoardSize;
     private int gameBoardSizeChosenByUser = 0;
+    private int chosenGameMode = 0;
     private char[][] gameBoard;
-    private String chosenOption;
+
 
 
     Gui(char[][] gameBoard){
@@ -82,9 +83,17 @@ public class Gui {
         System.out.println(GAME_TITLE);
         System.out.println(GAME_OPTIONS);
 
-        System.out.print(GAME_MODE_REQUEST);
         Scanner scanner = new Scanner(System.in);
-        chosenOption = scanner.nextLine();
+
+
+        while (chosenGameMode == 0){
+            System.out.print(GAME_MODE_REQUEST);
+            try {
+                chosenGameMode = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e){
+                System.err.print(BAD_INPUT_MESSAGE);
+            }
+        }
 
         while (gameBoardSizeChosenByUser == 0){
             System.out.print(GAME_SIZE_REQUEST);
@@ -108,7 +117,7 @@ public class Gui {
     }
 
     public void showPlayerScoredMessage(String playerName, int points){
-        System.out.println(playerName + " scored " + points + " points!");
+        System.out.println("\n" + playerName + " scored " + points + " points!");
     }
 
     public void showPlayersPoints(String player1Name, int player1Points, String player2Name, int player2Points){
@@ -120,11 +129,17 @@ public class Gui {
         System.out.println(TAKEN_PLACE_MESSAGE);
     }
 
-    public String getChosenGameOption(){
-        return chosenOption;
-    }
+
 
     public int getGameBoardSizeChosenByUser(){
         return gameBoardSizeChosenByUser;
+    }
+
+    public int getGameModeChosenByUser(){
+        return chosenGameMode;
+    }
+
+    public void showBadGameModeMessage(){
+        System.out.println(BAD_INPUT_MESSAGE);
     }
 }
