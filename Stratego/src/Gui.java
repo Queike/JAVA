@@ -11,6 +11,11 @@ public class Gui {
     private final String BAD_INPUT_MESSAGE = "\nBad input!";
     private final String TAKEN_PLACE_MESSAGE = "This place is taken! Please choose another. ";
 
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+
     private int gameBoardSize;
     private int gameBoardSizeChosenByUser = 0;
     private int chosenGameMode = 0;
@@ -117,7 +122,7 @@ public class Gui {
     }
 
     public void showPlayerScoredMessage(String playerName, int points){
-        System.out.println("\n" + playerName + " scored " + points + " points!");
+        System.out.println("\n" + ANSI_GREEN + playerName + " scored " + points + " points!" + ANSI_RESET);
     }
 
     public void showPlayersPoints(String player1Name, int player1Points, String player2Name, int player2Points){

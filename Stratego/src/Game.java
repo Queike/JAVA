@@ -10,7 +10,7 @@ public class Game {
     private int gameBoardSize;
     private char[][] gameBoard;
     private static char currentPlayer;
-    Gui gui;
+    private Gui gui;
     private int freeSpaces, player1Points, player2Points;
 
 
@@ -44,7 +44,7 @@ public class Game {
     }
 
     public void playAvP() throws InterruptedException {
-        AI ai = new AI();
+        AI ai = new AI(gameBoard);
 
         while (freeSpaces > 0){
             gui.printGameBoardWithIndexes(gameBoard);
@@ -54,7 +54,8 @@ public class Game {
 
             System.out.print("AI moves: ");
             TimeUnit.SECONDS.sleep(2);
-            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());
+//            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());
+            SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves());
             System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
             makeMove(aiMove);
         }
@@ -64,28 +65,6 @@ public class Game {
 
     }
 
-//    private void makePlayerMove(){
-//        gui.printGameBoardWithIndexes(gameBoard);
-//
-//        SingleMove move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
-//        if(gameBoard[move.getRow()][move.getColumn()] == EMPTY_DESIGNATION){
-//            gameBoard[move.getRow()][move.getColumn()] = currentPlayer;
-//
-//            if(checkMoveForPoints(move)){
-//                int earnedPoints = countPoints(move);
-//                gui.showPlayerScoredMessage(String.valueOf(currentPlayer), earnedPoints);
-//                addPointsToPlayerAccount(earnedPoints);
-//                gui.showPlayersPoints(String.valueOf(PLAYER1_DESIGNATION), player1Points, String.valueOf(PLAYER2_DESIGNATION), player2Points);
-//            }
-//
-//
-//            freeSpaces--;
-//            switchCurrentPlayer();
-//        } else {
-//            gui.showPlaceTakenMessage();
-//            makePlayerMove();
-//        }
-//    }
 
     private void makeMove(SingleMove move){
 
@@ -118,6 +97,7 @@ public class Game {
             currentPlayer = PLAYER2_DESIGNATION;
         else currentPlayer = PLAYER1_DESIGNATION;
     }
+
 
     private boolean checkMoveForPoints(SingleMove move){
         return checkRow(move) || checkColumn(move) || checkDiagonals(move) != 0;
