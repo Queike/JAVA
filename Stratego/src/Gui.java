@@ -11,16 +11,21 @@ public class Gui {
     private final String BAD_INPUT_MESSAGE = "\nBad input!";
     private final String TAKEN_PLACE_MESSAGE = "This place is taken! Please choose another. ";
 
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
+    private final char PLAYER1_DESIGNATION = 'M';
+    private final char PLAYER2_DESIGNATION = 'D';
+
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_RED = "\u001B[31m";
 
     private int gameBoardSize;
     private int gameBoardSizeChosenByUser = 0;
     private int chosenGameMode = 0;
     private char[][] gameBoard;
-
 
 
     Gui(char[][] gameBoard){
@@ -34,7 +39,11 @@ public class Gui {
     public void printGameBoard(){
         for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
             for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
-                System.out.print(gameBoard[rowIndex][columnIndex]);
+                char currentSign = gameBoard[rowIndex][columnIndex];
+                if(currentSign == PLAYER1_DESIGNATION){
+                    System.out.print(currentSign);
+                }
+
                 System.out.print(SEPARATOR);
             }
             System.out.println();
@@ -77,7 +86,15 @@ public class Gui {
             System.out.print("\t");
 
             for(int columnIndex = 0; columnIndex < gameBoard.length; columnIndex++){
-                System.out.print(gameBoard[rowIndex][columnIndex]);
+                char currentSign = gameBoard[rowIndex][columnIndex];
+                if(currentSign == PLAYER1_DESIGNATION){
+                    System.out.print(ANSI_BLUE + currentSign + ANSI_RESET);
+                }
+                else if(currentSign == PLAYER2_DESIGNATION){
+                    System.out.print(ANSI_RED + currentSign + ANSI_RESET);
+                }
+                else System.out.print(gameBoard[rowIndex][columnIndex]);
+
                 System.out.print(SEPARATOR);
             }
             System.out.println("\n");
@@ -126,8 +143,8 @@ public class Gui {
     }
 
     public void showPlayersPoints(String player1Name, int player1Points, String player2Name, int player2Points){
-        System.out.println(player1Name + " points: " + player1Points);
-        System.out.println(player2Name + " points: " + player2Points);
+        System.out.println(ANSI_BLUE + player1Name + " points: " + player1Points + ANSI_RESET);
+        System.out.println(ANSI_RED + player2Name + " points: " + player2Points + ANSI_RESET);
     }
 
     public void showPlaceTakenMessage(){

@@ -6,6 +6,7 @@ public class Game {
     private final char EMPTY_DESIGNATION = '_';
     private final char PLAYER1_DESIGNATION = 'M';
     private final char PLAYER2_DESIGNATION = 'D';
+    private final int AI_SLEEP_TIME_IN_SECONDS = 2;
 
     private int gameBoardSize;
     private char[][] gameBoard;
@@ -38,7 +39,6 @@ public class Game {
         while(freeSpaces > 0){
             gui.printGameBoardWithIndexes(gameBoard);
             SingleMove move = gui.getMove(String.valueOf(currentPlayer), currentPlayer);
-//            makePlayerMove();
             makeMove(move);
         }
     }
@@ -52,17 +52,51 @@ public class Game {
             makeMove(playerMove);
             gui.printGameBoardWithIndexes(gameBoard);
 
-            System.out.print("AI moves: ");
-            TimeUnit.SECONDS.sleep(2);
-//            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());
-            SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves());
-            System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
-            makeMove(aiMove);
+            if(freeSpaces > 0){
+                System.out.print("AI moves: ");
+                TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
+
+//            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());       // random move
+//            SingleMove aiMove = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
+                SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+
+                System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
+                makeMove(aiMove);
+            }
+
         }
     }
 
-    public void playAvA(){
+    public void playAvA() throws InterruptedException {
+        AI ai = new AI(gameBoard);
 
+        while (freeSpaces > 0){
+            gui.printGameBoardWithIndexes(gameBoard);
+            System.out.print("AI moves: ");
+            TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
+
+//            SingleMove ai1Move = ai.makeRandomMove(getAvailableMoves());       // random move
+//            SingleMove ai1Move = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
+            SingleMove ai1Move = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+
+            System.out.print(ai1Move.getRow() + " " + ai1Move.getColumn());
+            makeMove(ai1Move);
+
+            gui.printGameBoardWithIndexes(gameBoard);
+
+            if(freeSpaces > 0){
+                System.out.print("AI moves: ");
+                TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
+
+//            SingleMove ai2Move = ai.makeRandomMove(getAvailableMoves());       // random move
+                SingleMove ai2Move = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
+//            SingleMove ai2Move = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+
+                System.out.print(ai2Move.getRow() + " " + ai2Move.getColumn());
+                makeMove(ai2Move);
+            }
+
+        }
     }
 
 

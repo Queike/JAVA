@@ -21,6 +21,26 @@ public class AI {
         return availableMoves.get(random.nextInt(availableMoves.size()));
     }
 
+    public SingleMove makeMoveWithPoints(ArrayList<SingleMove> availavleMoves){
+        SingleMove resultMove = availavleMoves.get(0);
+        int resultPoints = 0;
+
+        for (SingleMove move : availavleMoves) {
+            int currentPoints = countPointsForPotentialMove(move);
+            if(currentPoints > 0){
+                resultPoints = currentPoints;
+                resultMove = move;
+                break;
+            }
+        }
+
+        if(resultPoints == 0)
+            resultMove = makeRandomMove(availavleMoves);
+
+        return resultMove;
+
+    }
+
     public SingleMove makeMoveWithMaxPoints(ArrayList<SingleMove> availavleMoves){
         int maxPoints = 0;
         SingleMove bestMove = availavleMoves.get(0);
