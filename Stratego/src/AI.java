@@ -1,3 +1,5 @@
+import sun.rmi.runtime.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -26,7 +28,7 @@ public class AI {
         int resultPoints = 0;
 
         for (SingleMove move : availavleMoves) {
-            int currentPoints = countPointsForPotentialMove(move);
+            int currentPoints = countPointsForPotentialMove(move, gameBoard);
             if(currentPoints > 0){
                 resultPoints = currentPoints;
                 resultMove = move;
@@ -41,12 +43,12 @@ public class AI {
 
     }
 
-    public SingleMove makeMoveWithMaxPoints(ArrayList<SingleMove> availavleMoves){
+    public SingleMove makeMoveWithMaxPoints(ArrayList<SingleMove> availableMoves){
         int maxPoints = 0;
-        SingleMove bestMove = availavleMoves.get(0);
+        SingleMove bestMove = availableMoves.get(0);
 
-        for (SingleMove move : availavleMoves) {
-            int currentPoints = countPointsForPotentialMove(move);
+        for (SingleMove move : availableMoves) {
+            int currentPoints = countPointsForPotentialMove(move, gameBoard);
             if(currentPoints > maxPoints){
                 maxPoints = currentPoints;
                 bestMove = move;
@@ -54,44 +56,166 @@ public class AI {
         }
 
         if(maxPoints == 0)
-            bestMove = makeRandomMove(availavleMoves);
+            bestMove = makeRandomMove(availableMoves);
 
         return bestMove;
     }
 
-    private int countPointsForPotentialMove(SingleMove move){
+    public SingleMove makeMoveWithMinMax(){
+        return minMax(gameBoard, 3, null, true);
+    }
+
+    private SingleMove minMax(char[][] board, int depth, SingleMove move, boolean isMaxing){
+        if(depth == 0 || countEmptyPlaces(board) == 0){
+            return move;
+        }
+
+        if(isMaxing){
+            double best = Double.NEGATIVE_INFINITY;
+            SingleMove returnMove = new SingleMove();
+            ArrayList<SingleMove> availableMoves = getAvailableMoves(board);
+
+            for (SingleMove currentMove : availableMoves) {
+                char[][] newBoard = copyBoardWithNewMove(board, currentMove);
+                SingleMove nextMove = minMax(newBoard, depth - 1, currentMove, false);
+
+                int points = countPointsForMove(nextMove, newBoard);
+                if(points > best){
+//                    System.out.println(points + " > " + best);
+                    returnMove = currentMove;
+                    best = points;
+                }
+            }
+//            Gui gui = new Gui();
+//            gui.printGameBoardWithIndexes(copyBoardWithNewMove(gameBoard, returnMove));
+            return returnMove;
+
+        } else{
+            double best = Double.POSITIVE_INFINITY;
+            SingleMove returnMove = new SingleMove();
+            ArrayList<SingleMove> availableMoves = getAvailableMoves(board);
+
+            for (SingleMove currentMove : availableMoves) {
+                char[][] newBoard = copyBoardWithNewMove(board, currentMove);
+                SingleMove nextMove = minMax(newBoard, depth - 1, currentMove, true);
+
+                int points = countPointsForMove(nextMove, newBoard);
+                if(points < best){
+                    returnMove = currentMove;
+                    best = points;
+                }
+            }
+//            Gui gui = new Gui();
+//            gui.printGameBoardWithIndexes(copyBoardWithNewMove(gameBoard, returnMove));
+            return returnMove;
+        }
+    }
+
+    private char[][] copyBoardWithNewMove(char[][] oldBoard, SingleMove newMove){
+        char[][] newBoard = new char[gameBoardSize][gameBoardSize];
+
+        for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
+            for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
+                char currentSign = oldBoard[rowIndex][columnIndex];
+                if(rowIndex == newMove.getRow() && columnIndex == newMove.getColumn()){
+                    newBoard[rowIndex][columnIndex] = OCCUPIED_DESIGNATION;
+                } else {
+                    newBoard[rowIndex][columnIndex] = currentSign;
+                }
+            }
+        }
+        return newBoard;
+    }
+
+
+    private int countPointsForPotentialMove(SingleMove move, char[][] board){
         gameBoard[move.getRow()][move.getColumn()] = OCCUPIED_DESIGNATION;
-        int potentialPoints = countPoints(move);
+        int potentialPoints = countPoints(move, board);
         gameBoard[move.getRow()][move.getColumn()] = EMPTY_DESIGNATION;
 
         return potentialPoints;
     }
 
+    private int countPointsForMove(SingleMove move, char[][] board){
+        board[move.getRow()][move.getColumn()] = OCCUPIED_DESIGNATION;
+        int points = countPoints(move, board);
 
-    private boolean checkRow(SingleMove move){
+//        if(points > 0)
+        board[move.getRow()][move.getColumn()] = EMPTY_DESIGNATION;
+
+        return points;
+    }
+
+
+    private boolean checkRow(SingleMove move, char[][] board){
         for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++) {
-            if (gameBoard[move.getRow()][columnIndex] == EMPTY_DESIGNATION)
+            if (board[move.getRow()][columnIndex] == EMPTY_DESIGNATION)
                 return false;
         }
         return true;
     }
 
-    private boolean checkColumn(SingleMove move){
+    private boolean checkColumn(SingleMove move, char[][] board){
         for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++) {
-            if (gameBoard[rowIndex][move.getColumn()] == EMPTY_DESIGNATION)
+            if (board[rowIndex][move.getColumn()] == EMPTY_DESIGNATION)
                 return false;
         }
         return true;
     }
 
-    private int checkFirstDiagonal(SingleMove move){
+    private int countEmptyPlaces(char[][] board){
+        int emptyPlacesCounter = 0;
+
+        for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
+            for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
+                char currentSign = gameBoard[rowIndex][columnIndex];
+                if(currentSign == EMPTY_DESIGNATION){
+                    emptyPlacesCounter++;
+                }
+            }
+        }
+        return emptyPlacesCounter;
+    }
+
+
+    private ArrayList<SingleMove> getAvailableMoves(){
+        ArrayList<SingleMove> availableMoves = new ArrayList<>();
+
+        for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
+            for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
+                if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION){
+                    SingleMove singleMove = new SingleMove(rowIndex, columnIndex);
+                    availableMoves.add(singleMove);
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    private ArrayList<SingleMove> getAvailableMoves(char[][] board){
+        ArrayList<SingleMove> availableMoves = new ArrayList<>();
+
+        for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++){
+            for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++){
+                if(board[rowIndex][columnIndex] == EMPTY_DESIGNATION){
+                    SingleMove singleMove = new SingleMove(rowIndex, columnIndex);
+                    availableMoves.add(singleMove);
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    private int checkFirstDiagonal(SingleMove move, char[][] board){
         int pointsCounter = 0;
 
         int rowIndex = move.getRow();
         int columnIndex = move.getColumn();
 
         while(columnIndex >= 0 && rowIndex >= 0){
-            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+            if(board[rowIndex][columnIndex] == EMPTY_DESIGNATION)
                 return 0;
             else pointsCounter++;
 
@@ -103,7 +227,7 @@ public class AI {
         columnIndex = move.getColumn() + 1;
 
         while(columnIndex < gameBoardSize && rowIndex < gameBoardSize){
-            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+            if(board[rowIndex][columnIndex] == EMPTY_DESIGNATION)
                 return 0;
             else pointsCounter++;
 
@@ -119,13 +243,13 @@ public class AI {
         return pointsCounter;
     }
 
-    private int checkSecondDiagonal(SingleMove move){
+    private int checkSecondDiagonal(SingleMove move, char[][] board){
         int pointsCounter = 0;
         int rowIndex = move.getRow();
         int columnIndex = move.getColumn();
 
         while(columnIndex >= 0 && rowIndex < gameBoardSize){
-            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+            if(board[rowIndex][columnIndex] == EMPTY_DESIGNATION)
                 return 0;
             else pointsCounter++;
 
@@ -137,7 +261,7 @@ public class AI {
         columnIndex = move.getColumn() + 1;
 
         while(columnIndex < gameBoardSize && rowIndex >= 0){
-            if(gameBoard[rowIndex][columnIndex] == EMPTY_DESIGNATION)
+            if(board[rowIndex][columnIndex] == EMPTY_DESIGNATION)
                 return 0;
             else pointsCounter++;
 
@@ -151,20 +275,20 @@ public class AI {
         return pointsCounter;
     }
 
-    private int checkDiagonals(SingleMove move){
-        return checkFirstDiagonal(move) + checkSecondDiagonal(move);
+    private int checkDiagonals(SingleMove move, char[][] board){
+        return checkFirstDiagonal(move, board) + checkSecondDiagonal(move, board);
     }
 
-    private int countPoints(SingleMove move){
+    private int countPoints(SingleMove move, char[][] board){
         int earnedPoints = 0;
 
-        if(checkRow(move))
+        if(checkRow(move, board))
             earnedPoints += countPointsFromRow();
 
-        if(checkColumn(move))
+        if(checkColumn(move, board))
             earnedPoints += countPointsFromColumn();
 
-        int diagonalPoints = checkDiagonals(move);
+        int diagonalPoints = checkDiagonals(move, board);
         if(diagonalPoints != 0)
             earnedPoints += countPointsFromDiagonal(diagonalPoints);
 

@@ -6,7 +6,7 @@ public class Game {
     private final char EMPTY_DESIGNATION = '_';
     private final char PLAYER1_DESIGNATION = 'M';
     private final char PLAYER2_DESIGNATION = 'D';
-    private final int AI_SLEEP_TIME_IN_SECONDS = 2;
+    private final int AI_SLEEP_TIME_IN_SECONDS = 1;
 
     private int gameBoardSize;
     private char[][] gameBoard;
@@ -58,7 +58,8 @@ public class Game {
 
 //            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());       // random move
 //            SingleMove aiMove = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
-                SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+//                SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+                SingleMove aiMove = ai.makeMoveWithMinMax();
 
                 System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
                 makeMove(aiMove);
@@ -132,18 +133,20 @@ public class Game {
         else currentPlayer = PLAYER1_DESIGNATION;
     }
 
-
     private boolean checkMoveForPoints(SingleMove move){
+
         return checkRow(move) || checkColumn(move) || checkDiagonals(move) != 0;
     }
 
     private boolean checkRow(SingleMove move){
+
         for(int columnIndex = 0; columnIndex < gameBoardSize; columnIndex++) {
             if (gameBoard[move.getRow()][columnIndex] == EMPTY_DESIGNATION)
                 return false;
         }
         return true;
     }
+
 
     private boolean checkColumn(SingleMove move){
         for(int rowIndex = 0; rowIndex < gameBoardSize; rowIndex++) {
@@ -152,6 +155,7 @@ public class Game {
         }
         return true;
     }
+
 
     private int checkFirstDiagonal(SingleMove move){
         int pointsCounter = 0;

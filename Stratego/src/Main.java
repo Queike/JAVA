@@ -6,7 +6,6 @@ public class Main {
         gui.setup();
         Game game = new Game(gui.getGameBoardSizeChosenByUser());
         runAppropriateGame(gui, game);
-
     }
 
     private static void runAppropriateGame(Gui gui, Game game) throws InterruptedException {
