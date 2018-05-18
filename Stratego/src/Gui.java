@@ -19,8 +19,8 @@ public class Gui {
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_RED = "\u001B[31m";
 
     private int gameBoardSize;
     private int gameBoardSizeChosenByUser = 0;

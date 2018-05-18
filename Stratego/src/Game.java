@@ -6,7 +6,7 @@ public class Game {
     private final char EMPTY_DESIGNATION = '_';
     private final char PLAYER1_DESIGNATION = 'M';
     private final char PLAYER2_DESIGNATION = 'D';
-    private final int AI_SLEEP_TIME_IN_SECONDS = 1;
+    private final int AI_SLEEP_TIME_IN_SECONDS = 0;
 
     private int gameBoardSize;
     private char[][] gameBoard;
@@ -44,7 +44,7 @@ public class Game {
     }
 
     public void playAvP() throws InterruptedException {
-        AI ai = new AI(gameBoard);
+        AI ai = new AI(gameBoard, 2);
 
         while (freeSpaces > 0){
             gui.printGameBoardWithIndexes(gameBoard);
@@ -56,10 +56,16 @@ public class Game {
                 System.out.print("AI moves: ");
                 TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
 
-//            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());       // random move
-//            SingleMove aiMove = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
-//                SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
-                SingleMove aiMove = ai.makeMoveWithMinMax();
+                // ARTIFICIAL INTELIGENCE PLAYER ALGORITHM
+
+//            SingleMove aiMove = ai.makeRandomMove(getAvailableMoves());               // random move
+//            SingleMove aiMove = ai.makeMoveWithPoints(getAvailableMoves());           // first move with points or random if no with points
+                SingleMove aiMove = ai.makeMoveWithMaxPoints(getAvailableMoves());    // move with max points or random if no with points
+//                SingleMove aiMove = ai.makeMoveWithMinMax();                          // move with min max algorithm
+//                SingleMove aiMove = ai.makeMoveWithAlphaBeta();                       // move with alpha beta algorithm
+//                SingleMove aiMove = ai.runMinMaxWithHeuristic();                      // move with min max algorithm with heuristic improve
+//                SingleMove aiMove = ai.smartMove(getAvailableMoves());                // move with min max algorithm with heuristic improve
+//                SingleMove aiMove = ai.smartMove(playerMove);                         // beta version - you dont need this :D
 
                 System.out.print(aiMove.getRow() + " " + aiMove.getColumn());
                 makeMove(aiMove);
@@ -69,16 +75,21 @@ public class Game {
     }
 
     public void playAvA() throws InterruptedException {
-        AI ai = new AI(gameBoard);
+        AI ai = new AI(gameBoard, 3);
 
         while (freeSpaces > 0){
             gui.printGameBoardWithIndexes(gameBoard);
             System.out.print("AI moves: ");
             TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
 
+            // ARTIFICIAL INTELIGENCE PLAYER 1 ALGORITHM
+
 //            SingleMove ai1Move = ai.makeRandomMove(getAvailableMoves());       // random move
 //            SingleMove ai1Move = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
             SingleMove ai1Move = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+//            SingleMove ai1Move = ai.makeMoveWithMinMax();                           // move with min max algorithm
+//            SingleMove ai1Move = ai.makeMoveWithAlphaBeta();                        // move with alpha beta algorithm
+//            SingleMove ai1Move = ai.runMinMaxWithHeuristic();                        // move with min max algorithm with heuristic improve
 
             System.out.print(ai1Move.getRow() + " " + ai1Move.getColumn());
             makeMove(ai1Move);
@@ -89,9 +100,17 @@ public class Game {
                 System.out.print("AI moves: ");
                 TimeUnit.SECONDS.sleep(AI_SLEEP_TIME_IN_SECONDS);
 
-//            SingleMove ai2Move = ai.makeRandomMove(getAvailableMoves());       // random move
-                SingleMove ai2Move = ai.makeMoveWithPoints(getAvailableMoves());   // first move with points or random if no with points
-//            SingleMove ai2Move = ai.makeMoveWithMaxPoints(getAvailableMoves()); // move with max points or random if no with points
+                // ARTIFICIAL INTELIGENCE PLAYER 2 ALGORITHM
+
+//            SingleMove ai2Move = ai.makeRandomMove(getAvailableMoves());          // random move
+//                SingleMove ai2Move = ai.makeMoveWithPoints(getAvailableMoves());  // first move with points or random if no with points
+//            SingleMove ai2Move = ai.makeMoveWithMaxPoints(getAvailableMoves());   // move with max points or random if no with points
+                SingleMove ai2Move = ai.makeMoveWithMinMax();                     // move with min max algorithm
+//                SingleMove ai2Move = ai.makeMoveWithAlphaBeta();                  // move with alpha beta algorithm
+//                SingleMove ai2Move = ai.runMinMaxWithHeuristic();                 // move with min max algorithm with heuristic improve
+//                SingleMove ai2Move = ai.smartMove(getAvailableMoves());           // beta version - you dont need this :D
+//                SingleMove ai2Move = ai.smartMove(ai1Move);                       // beta version - you dont need this :D
+
 
                 System.out.print(ai2Move.getRow() + " " + ai2Move.getColumn());
                 makeMove(ai2Move);

@@ -22,4 +22,8 @@ public class SingleMove {
         return "Row: " + row + ", Column: " + column;
     }
 
+
+    public boolean equals(SingleMove move){
+        return this.getRow() == move.getRow() && this.getColumn() == move.getColumn();
+    }
 }
