@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class NeighborhoodCompatibility {
 
-    private static final int NEIGHBORHOOD_SIZE = 25;
-    private static final double COHESION = 0.5;
+    private static final int NEIGHBORHOOD_SIZE = 50;
+    private static final double COHESION = 0.7;
     private static final double ACCEPTABLE = COHESION * (double) NEIGHBORHOOD_SIZE;
     private static final int R1 = 30;
     private static final int R2 = 100;

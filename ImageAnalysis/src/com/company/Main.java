@@ -33,8 +33,8 @@ public class Main {
 
         Image imgA = FileReader.readImage("src/drawable/imageC.png");
         File siftA = FileReader.readSift("src/drawable/imageC.png.haraff.sift");
-        Image imgB = FileReader.readImage("src/drawable/imageB.png");
-        File siftB = FileReader.readSift("src/drawable/imageB.png.haraff.sift");
+        Image imgB = FileReader.readImage("src/drawable/imageA.png");
+        File siftB = FileReader.readSift("src/drawable/imageA.png.haraff.sift");
 
 //        Image imgA = FileReader.readImage("src/drawable/kuchnia1.png");
 //        File siftA = FileReader.readSift("src/drawable/kuchnia1.png.haraff.sift");
@@ -55,17 +55,17 @@ public class Main {
 
         ArrayList<Pair> pairs = NeighborhoodCompatibility.getPairNeighbor(imagePropertiesA);
 
-        NeighborhoodCompatibility.setNeighborhood(pairs);
+//        NeighborhoodCompatibility.setNeighborhood(pairs);
 
 //        ArrayList<Pair> finalPairs = NeighborhoodCompatibility.getCohesiveNeighborhood(pairs);
 //        ArrayList<Pair> finalPairs = NeighborhoodCompatibility.getPhisicalDistanceNeighborhood(pairs);
 //        ArrayList<Pair> finalPairs = NeighborhoodCompatibility.getMostCohesivePairs(pairs);
-        ArrayList<Pair> finalPairs = new ArrayList<>(pairs);    // no selection pairs
+//        ArrayList<Pair> finalPairs = new ArrayList<>(pairs);    // no selection pairs
 
 
-        System.out.println("Number of pairs: " + finalPairs.size());
+//        System.out.println("Number of pairs: " + finalPairs.size());
 
-        EventQueue.invokeLater(() -> new Frame(imagePropertiesA, imagePropertiesB, finalPairs, null, false));
+//        EventQueue.invokeLater(() -> new Frame(imagePropertiesA, imagePropertiesB, finalPairs, null, false));
 
 
 
@@ -73,13 +73,13 @@ public class Main {
         // ___________________________ RANSAC ______________________________________________
 
 
-//        Ransac ransac = new Ransac(1000000, 30, 2, 650, pairs);
-//        Matrix matrix = ransac.ransacAlgorithm(true);
+        Ransac ransac = new Ransac(1000000, 30, 5, 650, pairs);
+        Matrix matrix = ransac.ransacAlgorithm(true);
 
-//        ArrayList<Pair> best = ransac.getMatchingPairs(matrix);
-//        System.out.println("Number of pairs: " + best.size());
+        ArrayList<Pair> best = ransac.getMatchingPairs(matrix);
+        System.out.println("Number of pairs: " + best.size());
 
 //        EventQueue.invokeLater(() -> new Frame(imagePropertiesA, imagePropertiesB, pairs, best, true));
-//        EventQueue.invokeLater(() -> new Frame(imagePropertiesA, imagePropertiesB, best, null, false));
+        EventQueue.invokeLater(() -> new Frame(imagePropertiesA, imagePropertiesB, best, null, false));
     }
 }

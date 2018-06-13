@@ -12,7 +12,7 @@ public class Ransac {
     private double r;
     private double R;
 
-    public Ransac(int iter, double maxError, double r, double R, ArrayList<Pair> pairs) {
+    Ransac(int iter, double maxError, double r, double R, ArrayList<Pair> pairs) {
         this.numberOfIterations = iter;
         this.maxError = maxError;
         this.r = r;
@@ -48,7 +48,9 @@ public class Ransac {
                     model = calculateModelPerspective(samples);
                 }
             }
+
             int score = 0;
+
             for (int currentPairNumber = 0; currentPairNumber < pairs.size(); currentPairNumber++) {
                 double error = modelError(model, pairs.get(currentPairNumber));
                 if (error < maxError) {
@@ -107,7 +109,8 @@ public class Ransac {
                 {0, 0, 0, samples.get(1).getKeyPointA().getCoordinateX(), samples.get(1).getKeyPointA().getCoordinateY(), 1},
                 {0, 0, 0, samples.get(2).getKeyPointA().getCoordinateX(), samples.get(2).getKeyPointA().getCoordinateY(), 1}};
 
-        double[][] vectorArray = {{samples.get(0).getKeyPointB().getCoordinateX()},
+        double[][] vectorArray = {
+                {samples.get(0).getKeyPointB().getCoordinateX()},
                 {samples.get(1).getKeyPointB().getCoordinateX()},
                 {samples.get(2).getKeyPointB().getCoordinateX()},
                 {samples.get(0).getKeyPointB().getCoordinateY()},
